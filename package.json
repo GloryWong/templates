@@ -1,0 +1,74 @@
+{
+  "name": "@gloxy/templates",
+  "type": "module",
+  "version": "1.0.1",
+  "description": "A script to create and initialize a new project directory",
+  "author": "glorywong1001@gmail.com",
+  "license": "MIT",
+  "homepage": "https://github.com/GloryWong/templates#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GloryWong/templates.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GloryWong/templates/issues"
+  },
+  "keywords": [
+    "templates",
+    "starter",
+    "project",
+    "node",
+    "typescript"
+  ],
+  "main": "./dist/index.js",
+  "typings": "./dist/index.ts",
+  "bin": {
+    "templates": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "pnpm simple-git-hooks",
+    "prepublishOnly": "pnpm test && pnpm build",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "fs-extra": "^11.2.0",
+    "giget": "^1.2.3",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.21.1",
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/jest": "^29.5.12",
+    "@types/mock-fs": "^4.13.4",
+    "@types/node": "^20.14.2",
+    "@types/yargs": "^17.0.32",
+    "eslint": "^8.57.0",
+    "eslint-plugin-perfectionist": "^2.11.0",
+    "lint-staged": "^15.2.7",
+    "mock-fs": "^5.2.0",
+    "simple-git-hooks": "^2.11.1",
+    "tsx": "^4.15.6",
+    "type-fest": "^4.20.1",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged",
+    "commit-msg": "pnpm commitlint --edit ${1}"
+  },
+  "lint-staged": {
+    "*": "pnpm lint:fix"
+  },
+  "engine": {
+    "node": ">=20"
+  }
+}
