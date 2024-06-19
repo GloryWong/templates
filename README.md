@@ -8,5 +8,5 @@
 ![GitHub forks](https://img.shields.io/github/forks/GloryWong/tmpl-base)
 ![GitHub Repo stars](https://img.shields.io/github/stars/GloryWong/tmpl-base)
 
-# create-project
-A script to create and initialize a new project directory
+# templates
+project templates and part templates

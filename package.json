@@ -2,7 +2,7 @@
   "name": "@gloxy/templates",
   "type": "module",
   "version": "1.0.1",
-  "description": "A script to create and initialize a new project directory",
+  "description": "Templates",
   "author": "glorywong1001@gmail.com",
   "license": "MIT",
   "homepage": "https://github.com/GloryWong/templates#readme",
