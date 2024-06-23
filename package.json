@@ -23,7 +23,7 @@
     "command"
   ],
   "main": "./dist",
-  "typings": "./dist",
+  "types": "./dist",
   "bin": {
     "template": "./dist/cli.js",
     "tmpl": "./dist/cli.js"
