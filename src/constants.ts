@@ -1,4 +1,16 @@
-export const PARTS_INFO = {
+import { getGitConfigs } from './getGitConfig.js'
+import type { TemplateVariables } from './types.js'
+
+interface PartConfig {
+  /**
+   * The destination directory.
+   * Relative to process.cwd()
+   */
+  dir: string
+  defaultTemplateVariables?: TemplateVariables | (() => TemplateVariables | Promise<TemplateVariables>)
+}
+
+export const PARTS_INFO: Readonly<Record<string, PartConfig>> = {
   commitlint: {
     dir: '.',
   },
@@ -17,6 +29,19 @@ export const PARTS_INFO = {
   vscode: {
     dir: './.vscode',
   },
-} as const
+  npm: {
+    dir: '.',
+    defaultTemplateVariables: async () => {
+      const gitDefault = await getGitConfigs({
+        userName: 'user.name',
+        email: 'user.email',
+      })
 
-export type PartName = keyof typeof PARTS_INFO
+      return {
+        ...gitDefault,
+        url: '',
+        projectName: '',
+      }
+    },
+  },
+}

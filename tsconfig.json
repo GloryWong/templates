@@ -1,9 +1,11 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
+    "rootDir": "./src",
     "types": [
       "vitest/globals"
     ],
+    "declaration": true,
     "outDir": "./dist"
   },
   "include": ["src/**/*"]

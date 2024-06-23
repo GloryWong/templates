@@ -1,6 +1,6 @@
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { ensureDir } from 'fs-extra'
+import { ensureDir } from 'fs-extra/esm'
 
 const TMP_NAME = 'gloxy-templates'
 

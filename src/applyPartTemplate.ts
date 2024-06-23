@@ -1,77 +1,55 @@
 import { join } from 'node:path'
 import { readdir } from 'node:fs/promises'
-import type { PathLike } from 'node:fs'
 import { downloadTemplate } from 'giget'
-import { copy } from 'fs-extra'
-import { PARTS_INFO, type PartName } from './constants.js'
-import { backUpFile } from './backUpFile.js'
+import { PARTS_INFO } from './constants.js'
 import { getTmpPath } from './getTmpPath.js'
 import { deleteTmp } from './deleteTmp.js'
+import type { CopyTemplateOptions } from './copyTemplate.js'
+import { copyTemplate } from './copyTemplate.js'
+import { isValidPartName } from './isValidPartName.js'
 
-export async function whichPartFilesExist(name: PartName, tmpPartDir: PathLike) {
-  const { dir } = PARTS_INFO[name]
-
-  const localPartFiles = await readdir(dir)
-  const tmpPartFiles = await readdir(tmpPartDir)
-
-  const existingFiles: string[] = []
-  const nonexistingFiles: string[] = []
-
-  tmpPartFiles.forEach((lf) => {
-    if (localPartFiles.includes(lf))
-      existingFiles.push(lf)
-    else
-      nonexistingFiles.push(lf)
-  })
-
-  return {
-    existingFiles,
-    nonexistingFiles,
+function getPartInfoDefaultTemplateVariables(partName: string) {
+  const { defaultTemplateVariables } = PARTS_INFO[partName]
+  if (!defaultTemplateVariables)
+    return {}
+  if (typeof defaultTemplateVariables === 'function') {
+    return defaultTemplateVariables()
   }
+
+  return defaultTemplateVariables
 }
 
-export interface ApplyPartTemplateOptions {
-  /**
-   * Overwrite existing files
-   * @default false
-   */
-  force?: boolean
-}
+export type ApplyPartTemplateOptions = CopyTemplateOptions
 
-export async function applyPartTemplate(name: PartName, options: ApplyPartTemplateOptions = {}) {
+export async function applyPartTemplate(partName: string, options: ApplyPartTemplateOptions = {}) {
   try {
-    const { force = false } = options
-    const location = `github:GloryWong/templates/parts/${name}#master`
+    if (!isValidPartName(partName))
+      throw new Error(`Invalid partName`)
+
+    const { force, merge, variables } = options
+    const location = `github:GloryWong/templates/parts/${partName}#master`
 
     // Download parts to tmp
     const tmp = await getTmpPath('downloads')
     const { source, dir } = await downloadTemplate(location, {
-      dir: join(tmp, name),
+      dir: join(tmp, partName),
     })
     if (!(await readdir(dir)).length)
       throw new Error(`Failed to download template from ${source}`)
 
-    // Back up existing files in destination
-    const { existingFiles } = await whichPartFilesExist(name, dir)
-    if (force && existingFiles.length) {
-      console.log('Overwrite %d file(s).', existingFiles.length)
-
-      for (let index = 0; index < existingFiles.length; index++) {
-        const fileName = existingFiles[index]
-        const backup = await backUpFile(join(PARTS_INFO[name].dir, fileName))
-        console.log('Original \'%s\' is backed up to %s', fileName, backup)
-      }
-    }
-    else if (existingFiles.length) {
-      throw new Error(`File '${existingFiles.join(', ')}' already exists in destination. Your can use '--force' to overwrite.`)
-    }
-
     // Copy tmp to destination
-    await copy(dir, PARTS_INFO[name].dir)
+    await copyTemplate(dir, PARTS_INFO[partName].dir, {
+      force,
+      merge,
+      variables: {
+        ...(await getPartInfoDefaultTemplateVariables(partName)),
+        ...variables,
+      },
+    })
     await deleteTmp('downloads')
-    console.log('Applied part template \'%s\' successfully! Finished.', name)
+    console.log('Applied part template \'%s\' successfully! Finished.', partName)
   }
-  catch (error) {
-    throw new Error(`Failed to apply part template \'${name}\'. Error: ${error}`)
+  catch (error: any) {
+    throw new Error(`Failed to apply part template \'${partName}\'. Reason: ${error.message}`)
   }
 }

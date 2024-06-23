@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { ensureDir, exists, outputFile, readFile, readdir } from 'fs-extra'
+import { ensureDir, exists, outputFile, readdir } from 'fs-extra'
 import mockFs from 'mock-fs'
 import { expect, vi } from 'vitest'
 import { applyPartTemplate } from '../src/applyPartTemplate.js'
@@ -52,38 +52,7 @@ describe('applyPartTemplate', () => {
     await expect(exists(join(PARTS_INFO.vscode.dir, 'file3.txt'))).resolves.toBeTruthy()
   })
 
-  it('should throw error if file exists in destination', async () => {
-    mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
-      await outputFile(join(dir, 'file1.txt'), '123')
-      return ({ source: input, dir })
-    })
-
-    await expect(() => applyPartTemplate('vscode')).rejects.toThrowError('exists')
-  })
-
-  it('should overwrite existing files in destination when use the force option', async () => {
-    mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
-      await outputFile(join(dir, 'file1.txt'), '123')
-      return ({ source: input, dir })
-    })
-
-    await applyPartTemplate('vscode', { force: true })
-    const content = (await readFile(join(PARTS_INFO.vscode.dir, 'file1.txt'))).toString()
-    expect(content).toEqual('123')
-  })
-
-  it('should apply part template', async () => {
-    mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
-      await outputFile(join(dir, 'file3.txt'), '')
-      await outputFile(join(dir, 'file4.txt'), '')
-      return ({ source: input, dir })
-    })
-
-    await applyPartTemplate('vscode')
-    expect(await readdir(PARTS_INFO.vscode.dir)).toEqual(expect.arrayContaining(['file3.txt', 'file4.txt']))
-  })
-
-  it('should clear downloads in tmp, at the end of execution', async () => {
+  it('should clear the downloads in tmp, at the end of execution', async () => {
     mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
       await outputFile(join(dir, 'file3.txt'), '')
       return ({ source: input, dir })
