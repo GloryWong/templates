@@ -31,6 +31,9 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "rimraf dist && tsc",
     "prepare": "pnpm simple-git-hooks",
@@ -72,8 +75,5 @@
   },
   "lint-staged": {
     "*": "pnpm lint:fix"
-  },
-  "engine": {
-    "node": ">=20"
   }
 }

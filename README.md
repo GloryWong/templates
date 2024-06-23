@@ -11,6 +11,7 @@
 ![NPM Type Definitions](https://img.shields.io/npm/types/%40gloxy%2Ftemplates)
 ![NPM Downloads](https://img.shields.io/npm/dw/%40gloxy%2Ftemplates)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/%40gloxy%2Ftemplates)
+![Node Current](https://img.shields.io/node/v/%40gloxy%2Ftemplates)
 
 # templates
 
