@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/GloryWong/templates/compare/v1.1.0...v1.1.1) (2024-06-23)
+
+
+### Bug Fixes
+
+* **readme:** badges ([67dd41d](https://github.com/GloryWong/templates/commit/67dd41d73ba9c815d009a72dbe2d4c1a95fba8b7))
+
 ## [1.1.0](https://github.com/GloryWong/templates/compare/v1.0.0...v1.1.0) (2024-06-23)
 
 
