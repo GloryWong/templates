@@ -10,7 +10,7 @@ interface PartConfig {
   defaultTemplateVariables?: TemplateVariables | (() => TemplateVariables | Promise<TemplateVariables>)
 }
 
-export const PARTS_INFO: Readonly<Record<string, PartConfig>> = {
+export const PART_CONFIGS: Readonly<Record<string, PartConfig>> = {
   commitlint: {
     dir: '.',
   },

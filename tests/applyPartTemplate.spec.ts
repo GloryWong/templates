@@ -3,7 +3,7 @@ import { ensureDir, exists, outputFile, readdir } from 'fs-extra'
 import mockFs from 'mock-fs'
 import { expect, vi } from 'vitest'
 import { applyPartTemplate } from '../src/applyPartTemplate.js'
-import { PARTS_INFO } from '../src/constants.js'
+import { PART_CONFIGS } from '../src/part-configs.js'
 import { getTmpPath } from '../src/getTmpPath.js'
 
 const mocks = vi.hoisted(() => ({
@@ -23,7 +23,7 @@ vi.mock('giget', () => ({
 describe('applyPartTemplate', () => {
   beforeEach(() => {
     mockFs({
-      [PARTS_INFO.vscode.dir]: {
+      [PART_CONFIGS.vscode.dir]: {
         'file1.txt': 'file1',
         'file2.txt': 'file2',
       },
@@ -49,7 +49,7 @@ describe('applyPartTemplate', () => {
     })
 
     await applyPartTemplate('vscode')
-    await expect(exists(join(PARTS_INFO.vscode.dir, 'file3.txt'))).resolves.toBeTruthy()
+    await expect(exists(join(PART_CONFIGS.vscode.dir, 'file3.txt'))).resolves.toBeTruthy()
   })
 
   it('should clear the downloads in tmp, at the end of execution', async () => {

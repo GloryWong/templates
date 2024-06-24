@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { readdir } from 'node:fs/promises'
 import { downloadTemplate } from 'giget'
-import { PARTS_INFO } from './constants.js'
+import { PART_CONFIGS } from './part-configs.js'
 import { getTmpPath } from './getTmpPath.js'
 import { deleteTmp } from './deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
@@ -9,7 +9,7 @@ import { copyTemplate } from './copyTemplate.js'
 import { isValidPartName } from './isValidPartName.js'
 
 function getPartInfoDefaultTemplateVariables(partName: string) {
-  const { defaultTemplateVariables } = PARTS_INFO[partName]
+  const { defaultTemplateVariables } = PART_CONFIGS[partName]
   if (!defaultTemplateVariables)
     return {}
   if (typeof defaultTemplateVariables === 'function') {
@@ -38,7 +38,7 @@ export async function applyPartTemplate(partName: string, options: ApplyPartTemp
       throw new Error(`Failed to download template from ${source}`)
 
     // Copy tmp to destination
-    await copyTemplate(dir, PARTS_INFO[partName].dir, {
+    await copyTemplate(dir, PART_CONFIGS[partName].dir, {
       force,
       merge,
       variables: {
