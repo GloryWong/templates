@@ -23,7 +23,7 @@ vi.mock('giget', () => ({
 describe('applyPartTemplate', () => {
   beforeEach(() => {
     mockFs({
-      [PART_CONFIGS.vscode.dir]: {
+      [PART_CONFIGS.vscode.destDir]: {
         'file1.txt': 'file1',
         'file2.txt': 'file2',
       },
@@ -49,7 +49,7 @@ describe('applyPartTemplate', () => {
     })
 
     await applyPartTemplate('vscode')
-    await expect(exists(join(PART_CONFIGS.vscode.dir, 'file3.txt'))).resolves.toBeTruthy()
+    await expect(exists(join(PART_CONFIGS.vscode.destDir, 'file3.txt'))).resolves.toBeTruthy()
   })
 
   it('should clear the downloads in tmp, at the end of execution', async () => {

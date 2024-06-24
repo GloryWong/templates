@@ -6,31 +6,31 @@ interface PartConfig {
    * The destination directory.
    * Relative to process.cwd()
    */
-  dir: string
+  destDir: string
   defaultTemplateVariables?: TemplateVariables | (() => TemplateVariables | Promise<TemplateVariables>)
 }
 
 export const PART_CONFIGS: Readonly<Record<string, PartConfig>> = {
   commitlint: {
-    dir: '.',
+    destDir: '.',
   },
   eslint: {
-    dir: '.',
+    destDir: '.',
   },
   git: {
-    dir: '.',
+    destDir: '.',
   },
   github: {
-    dir: './.github/workflow',
+    destDir: './.github/workflow',
   },
   typescript: {
-    dir: '.',
+    destDir: '.',
   },
   vscode: {
-    dir: './.vscode',
+    destDir: './.vscode',
   },
   npm: {
-    dir: '.',
+    destDir: '.',
     defaultTemplateVariables: async () => {
       const gitDefault = await getGitConfigs({
         userName: 'user.name',

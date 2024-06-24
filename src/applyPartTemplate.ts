@@ -38,7 +38,7 @@ export async function applyPartTemplate(partName: string, options: ApplyPartTemp
       throw new Error(`Failed to download template from ${source}`)
 
     // Copy tmp to destination
-    await copyTemplate(dir, PART_CONFIGS[partName].dir, {
+    await copyTemplate(dir, PART_CONFIGS[partName].destDir, {
       force,
       merge,
       variables: {
