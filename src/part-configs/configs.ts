@@ -3,7 +3,25 @@ import { definePartConfigs } from './definePartConfigs.js'
 
 export const configs = await definePartConfigs([
   {
-    id: 'commitlintstaged',
+    id: 'commitlint',
+    packageJsonUpdates: {
+      'scripts': {
+        prepare: 'pnpm simple-git-hooks',
+      },
+      'devDependencies': {
+        '@commitlint/cli': '^19',
+        '@commitlint/config-conventional': '^19',
+        'simple-git-hooks': '^2',
+      },
+      'simple-git-hooks': {
+        // eslint-disable-next-line no-template-curly-in-string
+        'commit-msg': 'pnpm commitlint --edit ${1}',
+      },
+    },
+  },
+  {
+    id: 'lintstaged',
+    skipTemplate: true,
     packageJsonUpdates: {
       'scripts': {
         'prepare': 'pnpm simple-git-hooks',
@@ -11,15 +29,11 @@ export const configs = await definePartConfigs([
         'lint:fix': 'pnpm lint --fix',
       },
       'devDependencies': {
-        '@commitlint/cli': '^19',
-        '@commitlint/config-conventional': '^19',
         'lint-staged': '^15',
         'simple-git-hooks': '^2',
       },
       'simple-git-hooks': {
         'pre-commit': 'pnpm lint-staged',
-        // eslint-disable-next-line no-template-curly-in-string
-        'commit-msg': 'pnpm commitlint --edit ${1}',
       },
       'lint-staged': {
         '*': 'pnpm lint:fix',

@@ -20,23 +20,25 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
 
     const { force, merge, variables } = options
 
-    // Download parts to tmp
-    const tmp = await getTmpPath(TEMPLATE_DOWNLOAD_DIR)
-    const { source, dir } = await downloadTemplate(config.src, {
-      dir: join(tmp, partId),
-    })
-    if (!(await readdir(dir)).length)
-      throw new Error(`Failed to download template from ${source}`)
+    if (!config.skipTemplate) {
+      // Download parts to tmp
+      const tmp = await getTmpPath(TEMPLATE_DOWNLOAD_DIR)
+      const { source, dir } = await downloadTemplate(config.src, {
+        dir: join(tmp, partId),
+      })
+      if (!(await readdir(dir)).length)
+        throw new Error(`Failed to download template from ${source}`)
 
-    // Copy tmp to destination
-    await copyTemplate(dir, config.destDir, {
-      force,
-      merge,
-      variables: {
-        ...config.defaultVariables,
-        ...variables,
-      },
-    })
+      // Copy tmp to destination
+      await copyTemplate(dir, config.destDir, {
+        force,
+        merge,
+        variables: {
+          ...config.defaultVariables,
+          ...variables,
+        },
+      })
+    }
 
     // Update package json
     const { packageJsonUpdates } = config

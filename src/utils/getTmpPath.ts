@@ -4,8 +4,8 @@ import { ensureDir } from 'fs-extra/esm'
 
 const TMP_NAME = 'gloxy-templates'
 
-export async function getTmpPath(dirName: string) {
+export async function getTmpPath(dirName: string, dirEnsure = true) {
   const path = join(tmpdir(), TMP_NAME, dirName)
-  await ensureDir(path)
+  dirEnsure && await ensureDir(path)
   return path
 }

@@ -32,6 +32,15 @@ vi.mock('../src/part-configs/configs.js', (): { configs: PartConfigs } => {
           },
         },
       ],
+      [
+        'partId4',
+        {
+          id: 'partId4',
+          src: '',
+          destDir: '.',
+          skipTemplate: true,
+        },
+      ],
     ]),
   })
 })

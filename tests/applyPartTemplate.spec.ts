@@ -5,6 +5,7 @@ import { expect, vi } from 'vitest'
 import { readPackage } from 'read-pkg'
 import { applyPartTemplate } from '../src/applyPartTemplate.js'
 import { getTmpPath } from '../src/utils/getTmpPath.js'
+import { TEMPLATE_DOWNLOAD_DIR } from '../src/constants.js'
 
 const mocks = vi.hoisted(() => ({
   downloadTemplate: vi.fn()
@@ -53,6 +54,15 @@ describe('applyPartTemplate', () => {
 
       await applyPartTemplate('partId2')
       await expect(exists('.dir/file3.txt')).resolves.toBeTruthy()
+    })
+
+    it('should skip downloading and coping when skipTemplate config is true', async () => {
+      vi.doMock('../src/utils/deleteTmp.js', () => ({
+        deleteTmp: vi.fn(),
+      }))
+      await applyPartTemplate('partId4')
+      await expect(async () => readdir(await getTmpPath(TEMPLATE_DOWNLOAD_DIR, false))).rejects.toThrowError(/ENOENT/)
+      vi.doUnmock('../src/utils/deleteTmp.js')
     })
 
     it('should clear the downloads in tmp, at the end of execution', async () => {
