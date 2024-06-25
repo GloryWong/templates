@@ -1,15 +1,16 @@
 import { join } from 'node:path'
 import { readdir } from 'node:fs/promises'
 import { downloadTemplate } from 'giget'
-import { PART_CONFIGS } from './part-configs.js'
+import { updatePackage } from 'write-package'
+import { partConfigs } from './part-configs.js'
 import { getTmpPath } from './getTmpPath.js'
 import { deleteTmp } from './deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
 import { copyTemplate } from './copyTemplate.js'
 import { isValidPartName } from './isValidPartName.js'
 
-function getPartInfoDefaultTemplateVariables(partName: string) {
-  const { defaultTemplateVariables } = PART_CONFIGS[partName]
+function getPartConfigDefaultTemplateVariables(partName: string) {
+  const { defaultTemplateVariables } = partConfigs[partName]
   if (!defaultTemplateVariables)
     return {}
   if (typeof defaultTemplateVariables === 'function') {
@@ -38,14 +39,21 @@ export async function applyPartTemplate(partName: string, options: ApplyPartTemp
       throw new Error(`Failed to download template from ${source}`)
 
     // Copy tmp to destination
-    await copyTemplate(dir, PART_CONFIGS[partName].destDir, {
+    await copyTemplate(dir, partConfigs[partName].destDir, {
       force,
       merge,
       variables: {
-        ...(await getPartInfoDefaultTemplateVariables(partName)),
+        ...(await getPartConfigDefaultTemplateVariables(partName)),
         ...variables,
       },
     })
+
+    // Update package json
+    const { packageJsonUpdates } = partConfigs[partName]
+    if (packageJsonUpdates) {
+      await updatePackage(packageJsonUpdates)
+    }
+
     await deleteTmp('downloads')
     console.log('Applied part template \'%s\' successfully! Finished.', partName)
   }

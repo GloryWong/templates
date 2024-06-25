@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import { createRequire } from 'node:module'
 import { Argument, program } from 'commander'
-import { PART_CONFIGS } from './part-configs.js'
+import { readPackage } from 'read-pkg'
+import { partConfigs } from './part-configs.js'
 import { applyPartTemplate } from './applyPartTemplate.js'
 
-const version = createRequire(import.meta.url)('../package.json').version
+const version = (await readPackage()).version
 
 program
   .name('template')
@@ -13,7 +13,7 @@ program
 
 program.command('apply')
   .description('Apply a part template. Part templates are applied to current working directory by default.')
-  .addArgument(new Argument('<part-name>', 'part template name.').choices(Object.keys(PART_CONFIGS)))
+  .addArgument(new Argument('<part-name>', 'part template name.').choices(Object.keys(partConfigs)))
   .option('-f, --force', 'should overwrite existing files')
   .option('-m, --merge', 'should merge existing files. (JSON only)')
   .action((partName, options, command) => {

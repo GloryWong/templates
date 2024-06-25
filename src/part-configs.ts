@@ -1,21 +1,17 @@
 import { getGitConfigs } from './getGitConfig.js'
-import type { TemplateVariables } from './types.js'
+import { definePartConfigs } from './definePartConfigs.js'
 
-interface PartConfig {
-  /**
-   * The destination directory.
-   * Relative to process.cwd()
-   */
-  destDir: string
-  defaultTemplateVariables?: TemplateVariables | (() => TemplateVariables | Promise<TemplateVariables>)
-}
-
-export const PART_CONFIGS: Readonly<Record<string, PartConfig>> = {
+export const partConfigs = definePartConfigs({
   commitlint: {
     destDir: '.',
   },
   eslint: {
     destDir: '.',
+    packageJsonUpdates: {
+      devDependencies: {
+        eslint: '^8',
+      },
+    },
   },
   git: {
     destDir: '.',
@@ -25,6 +21,11 @@ export const PART_CONFIGS: Readonly<Record<string, PartConfig>> = {
   },
   typescript: {
     destDir: '.',
+    packageJsonUpdates: {
+      devDependencies: {
+        'type-fest': 'latest',
+      },
+    },
   },
   vscode: {
     destDir: './.vscode',
@@ -44,4 +45,4 @@ export const PART_CONFIGS: Readonly<Record<string, PartConfig>> = {
       }
     },
   },
-}
+})
