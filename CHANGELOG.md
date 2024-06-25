@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/GloryWong/templates/compare/v1.1.1...v1.2.0) (2024-06-25)
+
+
+### Features
+
+* available to update package.json ([4e1fee9](https://github.com/GloryWong/templates/commit/4e1fee9538548b6ce257d59d2887aeb64b6057f5))
+* **parts:** update parts ([347e12e](https://github.com/GloryWong/templates/commit/347e12eafee286a13f00287b102616ab9596fa7a))
+* remove template bin ([696f8e8](https://github.com/GloryWong/templates/commit/696f8e8091e395b224e7ba3a8e32c424e44cb44d))
+
 ## [1.1.1](https://github.com/GloryWong/templates/compare/v1.1.0...v1.1.1) (2024-06-23)
 
 
