@@ -1,3 +1,5 @@
+import { basename } from 'node:path'
+import { cwd } from 'node:process'
 import { getGitConfigs } from '../utils/getGitConfig.js'
 import { definePartConfigs } from './definePartConfigs.js'
 
@@ -87,9 +89,11 @@ export const configs = await definePartConfigs([
         url: 'user.url',
       })
 
+      const dirName = basename(cwd())
+
       return {
         url: '',
-        projectName: '',
+        projectName: dirName,
         ...gitDefault,
       }
     },

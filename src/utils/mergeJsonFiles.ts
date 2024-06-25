@@ -1,3 +1,4 @@
+import { EOL } from 'node:os'
 import merge from 'deepmerge'
 import { outputJSON, readJSON } from 'fs-extra/esm'
 import { backUpFile } from './backUpFile.js'
@@ -19,7 +20,10 @@ export async function mergeJsonFiles(srcFilePath: string, destFilePath: string, 
     const destContent = await readJSON(destFilePath)
     const result = merge(destContent, srcContent)
 
-    await outputJSON(destFilePath, result)
+    await outputJSON(destFilePath, result, {
+      spaces: 2,
+      EOL,
+    })
     return true
   }
   catch (error: any) {

@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
+import { join } from 'node:path'
 import { Argument, program } from 'commander'
 import { readPackage } from 'read-pkg'
 import { ids } from './part-configs/index.js'
 import { applyPartTemplate } from './applyPartTemplate.js'
 
-const version = (await readPackage()).version
+const version = (await readPackage({ cwd: join(import.meta.dirname, '..') })).version
 
 program
   .name('template')
