@@ -4,7 +4,7 @@ import mockFs from 'mock-fs'
 import { expect, vi } from 'vitest'
 import { readPackage } from 'read-pkg'
 import { applyPartTemplate } from '../src/applyPartTemplate.js'
-import { getTmpPath } from '../src/getTmpPath.js'
+import { getTmpPath } from '../src/utils/getTmpPath.js'
 
 const mocks = vi.hoisted(() => ({
   downloadTemplate: vi.fn()

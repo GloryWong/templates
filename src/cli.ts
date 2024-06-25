@@ -2,7 +2,7 @@
 
 import { Argument, program } from 'commander'
 import { readPackage } from 'read-pkg'
-import { partConfigs } from './part-configs.js'
+import { partNames } from './part-configs/index.js'
 import { applyPartTemplate } from './applyPartTemplate.js'
 
 const version = (await readPackage()).version
@@ -13,7 +13,7 @@ program
 
 program.command('apply')
   .description('Apply a part template. Part templates are applied to current working directory by default.')
-  .addArgument(new Argument('<part-name>', 'part template name.').choices(Object.keys(partConfigs)))
+  .addArgument(new Argument('<part-name>', 'part template name.').choices(partNames))
   .option('-f, --force', 'should overwrite existing files')
   .option('-m, --merge', 'should merge existing files. (JSON only)')
   .action((partName, options, command) => {

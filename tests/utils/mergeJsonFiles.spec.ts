@@ -1,6 +1,6 @@
 import mockFs from 'mock-fs'
 import { readJSON, readdir } from 'fs-extra'
-import { mergeJsonFiles } from '../src/mergeJsonFiles'
+import { mergeJsonFiles } from '../../src/utils/mergeJsonFiles'
 
 const file1Json = {
   a: 'a',

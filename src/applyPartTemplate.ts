@@ -2,44 +2,34 @@ import { join } from 'node:path'
 import { readdir } from 'node:fs/promises'
 import { downloadTemplate } from 'giget'
 import { updatePackage } from 'write-package'
-import { partConfigs } from './part-configs.js'
-import { getTmpPath } from './getTmpPath.js'
-import { deleteTmp } from './deleteTmp.js'
+import { getTmpPath } from './utils/getTmpPath.js'
+import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
 import { copyTemplate } from './copyTemplate.js'
-import { isValidPartName } from './isValidPartName.js'
-
-function getPartConfigDefaultTemplateVariables(partName: string) {
-  const { defaultTemplateVariables } = partConfigs[partName]
-  if (!defaultTemplateVariables)
-    return {}
-  if (typeof defaultTemplateVariables === 'function') {
-    return defaultTemplateVariables()
-  }
-
-  return defaultTemplateVariables
-}
+import { PART_TEMPLATE_LOCATION, TEMPLATE_DOWNLOAD_DIR } from './constants.js'
+import { getPartConfig, getPartConfigDefaultTemplateVariables } from './part-configs/index.js'
 
 export type ApplyPartTemplateOptions = CopyTemplateOptions
 
 export async function applyPartTemplate(partName: string, options: ApplyPartTemplateOptions = {}) {
   try {
-    if (!isValidPartName(partName))
+    const config = getPartConfig(partName)
+
+    if (!config)
       throw new Error(`Invalid partName`)
 
     const { force, merge, variables } = options
-    const location = `github:GloryWong/templates/parts/${partName}#master`
 
     // Download parts to tmp
-    const tmp = await getTmpPath('downloads')
-    const { source, dir } = await downloadTemplate(location, {
+    const tmp = await getTmpPath(TEMPLATE_DOWNLOAD_DIR)
+    const { source, dir } = await downloadTemplate(`${PART_TEMPLATE_LOCATION}/${partName}#master`, {
       dir: join(tmp, partName),
     })
     if (!(await readdir(dir)).length)
       throw new Error(`Failed to download template from ${source}`)
 
     // Copy tmp to destination
-    await copyTemplate(dir, partConfigs[partName].destDir, {
+    await copyTemplate(dir, config.destDir, {
       force,
       merge,
       variables: {
@@ -49,12 +39,12 @@ export async function applyPartTemplate(partName: string, options: ApplyPartTemp
     })
 
     // Update package json
-    const { packageJsonUpdates } = partConfigs[partName]
+    const { packageJsonUpdates } = config
     if (packageJsonUpdates) {
       await updatePackage(packageJsonUpdates)
     }
 
-    await deleteTmp('downloads')
+    await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
     console.log('Applied part template \'%s\' successfully! Finished.', partName)
   }
   catch (error: any) {

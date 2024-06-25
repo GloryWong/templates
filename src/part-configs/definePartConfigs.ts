@@ -1,5 +1,5 @@
 import type { PackageJson } from 'type-fest'
-import type { TemplateVariables } from './types.js'
+import type { TemplateVariables } from '../types.js'
 
 export interface PartConfig {
   /**

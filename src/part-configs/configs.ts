@@ -1,7 +1,7 @@
-import { getGitConfigs } from './getGitConfig.js'
+import { getGitConfigs } from '../utils/getGitConfig.js'
 import { definePartConfigs } from './definePartConfigs.js'
 
-export const partConfigs = definePartConfigs({
+export const configs = definePartConfigs({
   commitlintstaged: {
     destDir: '.',
     packageJsonUpdates: {

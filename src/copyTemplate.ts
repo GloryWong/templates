@@ -3,9 +3,9 @@ import { readdir, stat } from 'node:fs/promises'
 import type { CopyOptions } from 'fs-extra/esm'
 import { copy, ensureDir, ensureFile, pathExists } from 'fs-extra/esm'
 import type { TemplateVariables } from './types.js'
-import { listDirFiles } from './listDirFiles.js'
-import { backUpFile } from './backUpFile.js'
-import { mergeJsonFiles } from './mergeJsonFiles.js'
+import { listDirFiles } from './utils/listDirFiles.js'
+import { backUpFile } from './utils/backUpFile.js'
+import { mergeJsonFiles } from './utils/mergeJsonFiles.js'
 import { assignTemplateVariables } from './assignTemplateVariables.js'
 
 export interface CopyTemplateOptions extends CopyOptions {

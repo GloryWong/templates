@@ -1,7 +1,7 @@
 import mockFs from 'mock-fs'
 import { readdir } from 'fs-extra'
-import { backUpFile } from '../src/backUpFile'
-import { getTmpPath } from '../src/getTmpPath'
+import { backUpFile } from '../../src/utils/backUpFile'
+import { getTmpPath } from '../../src/utils/getTmpPath'
 
 const cases = [
   ['file1', /^file1\.backup-\d{14}$/],
