@@ -1,9 +1,9 @@
 import { getGitConfigs } from '../utils/getGitConfig.js'
 import { definePartConfigs } from './definePartConfigs.js'
 
-export const configs = definePartConfigs({
-  commitlintstaged: {
-    destDir: '.',
+export const configs = await definePartConfigs([
+  {
+    id: 'commitlintstaged',
     packageJsonUpdates: {
       'scripts': {
         'prepare': 'pnpm simple-git-hooks',
@@ -26,8 +26,8 @@ export const configs = definePartConfigs({
       },
     },
   },
-  eslint: {
-    destDir: '.',
+  {
+    id: 'eslint',
     packageJsonUpdates: {
       scripts: {
         'lint': 'eslint .',
@@ -40,14 +40,15 @@ export const configs = definePartConfigs({
       },
     },
   },
-  git: {
-    destDir: '.',
+  {
+    id: 'git',
   },
-  github: {
-    destDir: './.github/workflow',
+  {
+    id: 'github',
+    destDir: '.github/workflow',
   },
-  typescript: {
-    destDir: '.',
+  {
+    id: 'typescript',
     packageJsonUpdates: {
       engines: {
         node: '>=20',
@@ -59,22 +60,24 @@ export const configs = definePartConfigs({
       },
     },
   },
-  vscode: {
-    destDir: './.vscode',
+  {
+    id: 'vscode',
+    destDir: '.vscode',
   },
-  npm: {
-    destDir: '.',
-    defaultTemplateVariables: async () => {
+  {
+    id: 'npm',
+    defaultVariables: async () => {
       const gitDefault = await getGitConfigs({
         userName: 'user.name',
         email: 'user.email',
+        url: 'user.url',
       })
 
       return {
-        ...gitDefault,
         url: '',
         projectName: '',
+        ...gitDefault,
       }
     },
   },
-})
+])

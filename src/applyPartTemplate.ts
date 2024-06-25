@@ -6,24 +6,24 @@ import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
 import { copyTemplate } from './copyTemplate.js'
-import { PART_TEMPLATE_LOCATION, TEMPLATE_DOWNLOAD_DIR } from './constants.js'
-import { getPartConfig, getPartConfigDefaultTemplateVariables } from './part-configs/index.js'
+import { TEMPLATE_DOWNLOAD_DIR } from './constants.js'
+import { configs } from './part-configs/index.js'
 
 export type ApplyPartTemplateOptions = CopyTemplateOptions
 
-export async function applyPartTemplate(partName: string, options: ApplyPartTemplateOptions = {}) {
+export async function applyPartTemplate(partId: string, options: ApplyPartTemplateOptions = {}) {
   try {
-    const config = getPartConfig(partName)
+    const config = configs.get(partId)
 
     if (!config)
-      throw new Error(`Invalid partName`)
+      throw new Error(`Invalid partId`)
 
     const { force, merge, variables } = options
 
     // Download parts to tmp
     const tmp = await getTmpPath(TEMPLATE_DOWNLOAD_DIR)
-    const { source, dir } = await downloadTemplate(`${PART_TEMPLATE_LOCATION}/${partName}#master`, {
-      dir: join(tmp, partName),
+    const { source, dir } = await downloadTemplate(config.src, {
+      dir: join(tmp, partId),
     })
     if (!(await readdir(dir)).length)
       throw new Error(`Failed to download template from ${source}`)
@@ -33,7 +33,7 @@ export async function applyPartTemplate(partName: string, options: ApplyPartTemp
       force,
       merge,
       variables: {
-        ...(await getPartConfigDefaultTemplateVariables(partName)),
+        ...config.defaultVariables,
         ...variables,
       },
     })
@@ -45,9 +45,9 @@ export async function applyPartTemplate(partName: string, options: ApplyPartTemp
     }
 
     await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
-    console.log('Applied part template \'%s\' successfully! Finished.', partName)
+    console.log('Applied part template \'%s\' successfully! Finished.', partId)
   }
   catch (error: any) {
-    throw new Error(`Failed to apply part template \'${partName}\'. Reason: ${error.message}`)
+    throw new Error(`Failed to apply part template \'${partId}\'. Reason: ${error.message}`)
   }
 }

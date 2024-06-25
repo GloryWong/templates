@@ -37,12 +37,12 @@ describe('applyPartTemplate', () => {
       })
     })
 
-    it('should throw error when passing partName is invalid', async () => {
+    it('should throw error when passing partId is invalid', async () => {
       await expect(() => applyPartTemplate('test')).rejects.toThrowError(/invalid/i)
     })
 
     it('should throw error when fail to download', async () => {
-      await expect(() => applyPartTemplate('partName1')).rejects.toThrowError(/Failed.*download/)
+      await expect(() => applyPartTemplate('partId1')).rejects.toThrowError(/Failed.*download/)
     })
 
     it('should copy from tmp to destination directory', async () => {
@@ -51,7 +51,7 @@ describe('applyPartTemplate', () => {
         return ({ source: input, dir })
       })
 
-      await applyPartTemplate('partName2')
+      await applyPartTemplate('partId2')
       await expect(exists('.dir/file3.txt')).resolves.toBeTruthy()
     })
 
@@ -61,7 +61,7 @@ describe('applyPartTemplate', () => {
         return ({ source: input, dir })
       })
 
-      await applyPartTemplate('partName1')
+      await applyPartTemplate('partId1')
       expect((await readdir(await getTmpPath('downloads'))).length).toEqual(0)
     })
   })
@@ -77,7 +77,7 @@ describe('applyPartTemplate', () => {
         return ({ source: input, dir })
       })
 
-      await applyPartTemplate('partName3')
+      await applyPartTemplate('partId3')
       expect((await readPackage()).name).toBe('boo')
     })
 
@@ -98,7 +98,7 @@ describe('applyPartTemplate', () => {
         return ({ source: input, dir })
       })
 
-      await applyPartTemplate('partName3')
+      await applyPartTemplate('partId3')
       const pkgJson = await readPackage()
       expect(pkgJson.name).toBe('boo')
       expect(pkgJson.dependencies?.foo).toBe('^4.3.2')
