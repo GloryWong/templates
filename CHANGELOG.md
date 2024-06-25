@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/GloryWong/templates/compare/v1.2.0...v1.3.0) (2024-06-25)
+
+
+### Features
+
+* **partConfigs:** can skip downloading and copying templates ([f05c4de](https://github.com/GloryWong/templates/commit/f05c4de4aa834dfafea008bccde0f3ac5310f662))
+* **partConfigs:** default project name for npm ([2de225c](https://github.com/GloryWong/templates/commit/2de225cdfce0a352e1a87fc0e74d10a95946bbfb))
+
 ## [1.2.0](https://github.com/GloryWong/templates/compare/v1.1.1...v1.2.0) (2024-06-25)
 
 
