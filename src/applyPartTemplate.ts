@@ -8,8 +8,15 @@ import type { CopyTemplateOptions } from './copyTemplate.js'
 import { copyTemplate } from './copyTemplate.js'
 import { TEMPLATE_DOWNLOAD_DIR } from './constants.js'
 import { configs } from './part-configs/index.js'
+import { installDeps } from './installDeps.js'
 
-export type ApplyPartTemplateOptions = CopyTemplateOptions
+export interface ApplyPartTemplateOptions extends CopyTemplateOptions {
+  /**
+   * if install node package dependencies
+   * @default false
+   */
+  install?: boolean
+}
 
 export async function applyPartTemplate(partId: string, options: ApplyPartTemplateOptions = {}) {
   try {
@@ -18,7 +25,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     if (!config)
       throw new Error(`Invalid partId`)
 
-    const { force, merge, variables } = options
+    const { force, merge, variables, install = false } = options
 
     if (!config.skipTemplate) {
       // Download parts to tmp
@@ -47,7 +54,12 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     }
 
     await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
-    console.log('Applied part template \'%s\' successfully! Finished.', partId)
+
+    console.log('Applied part template \'%s\' successfully!', partId)
+    // Install dependencies
+    if (install) {
+      await installDeps(config)
+    }
   }
   catch (error: any) {
     throw new Error(`Failed to apply part template \'${partId}\'. Reason: ${error.message}`)

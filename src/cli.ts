@@ -17,6 +17,7 @@ program.command('apply')
   .addArgument(new Argument('<id>', 'part template id.').choices(ids))
   .option('-f, --force', 'should overwrite existing files')
   .option('-m, --merge', 'should merge existing files. (JSON only)')
+  .option('--install', 'install package dependencies after part template is applied')
   .action((partId, options, command) => {
     console.log(partId, options, command.name())
     return applyPartTemplate(partId, options)

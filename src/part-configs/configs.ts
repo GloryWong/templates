@@ -72,7 +72,7 @@ export const configs = await definePartConfigs([
       devDependencies: {
         'typescript': '^5',
         '@tsconfig/node20': '^20',
-        'type-fest': 'latest',
+        'type-fest': '^4',
       },
     },
   },
