@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/GloryWong/templates/compare/v1.4.0...v1.4.1) (2024-06-26)
+
+
+### Bug Fixes
+
+* **partConfig:** github dest dir ([8dacf38](https://github.com/GloryWong/templates/commit/8dacf3814f7865d2cd66fc61f05e49e0221b2656))
+
 ## [1.4.0](https://github.com/GloryWong/templates/compare/v1.3.0...v1.4.0) (2024-06-26)
 
 
