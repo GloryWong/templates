@@ -61,7 +61,7 @@ export const configs = await definePartConfigs([
   },
   {
     id: 'github',
-    destDir: '.github/workflow',
+    destDir: '.github/workflows',
   },
   {
     id: 'typescript',
