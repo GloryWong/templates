@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/GloryWong/templates/compare/v1.3.0...v1.4.0) (2024-06-26)
+
+
+### Features
+
+* **apply part template:** can install deps ([d4c26cd](https://github.com/GloryWong/templates/commit/d4c26cd022a526d78ce230be6fc63adc5416a38e))
+
 ## [1.3.0](https://github.com/GloryWong/templates/compare/v1.2.0...v1.3.0) (2024-06-25)
 
 
