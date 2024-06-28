@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/GloryWong/templates/compare/v1.4.1...v1.5.0) (2024-06-28)
+
+
+### Features
+
+* add cli spinner ([b1dbbeb](https://github.com/GloryWong/templates/commit/b1dbbeb64e54c60fe06531a668dcd4e09074ddd2))
+* **logs:** able to display verbose logs ([d828c61](https://github.com/GloryWong/templates/commit/d828c616ada1d277f3d150809c4261ae6e790438))
+
 ## [1.4.1](https://github.com/GloryWong/templates/compare/v1.4.0...v1.4.1) (2024-06-26)
 
 
