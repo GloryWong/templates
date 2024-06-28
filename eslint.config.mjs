@@ -6,7 +6,4 @@ export default await antfu({
   plugins: {
     perfectionist,
   },
-  rules: {
-    'no-console': 'off',
-  },
 })

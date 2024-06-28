@@ -7,6 +7,7 @@ import { listDirFiles } from './utils/listDirFiles.js'
 import { backUpFile } from './utils/backUpFile.js'
 import { mergeJsonFiles } from './utils/mergeJsonFiles.js'
 import { assignTemplateVariables } from './assignTemplateVariables.js'
+import { logger } from './utils/logger.js'
 
 export interface CopyTemplateOptions extends CopyOptions {
   /**
@@ -99,7 +100,7 @@ async function mergeFiles(srcPath: string, destPath: string, fileNames: string[]
  */
 export async function copyTemplate(srcPath: string, destPath: string, options: CopyTemplateOptions = {}) {
   const { variables, force = false, merge = false } = options
-
+  const log = logger('copyTemplate')
   try {
     if (!(await pathExists(srcPath)))
       throw new Error(`${srcPath} does not exist`)
@@ -136,26 +137,26 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
     if (existingFiles.length) {
       if (merge) {
         const { mergedFileNames, nonMergedFileNames } = await mergeFiles(srcPath, destPath, existingFiles, destPathIsFile)
-        mergedFileNames.length && console.log('Merged %s existing files %s.', mergedFileNames.length, mergedFileNames.join(', '))
-        nonMergedFileNames.length && console.log('%s existing files %s cannot be merged. Skipped.', nonMergedFileNames.length, nonMergedFileNames.join(', '))
+        mergedFileNames.length && log.debug('Merged %s existing files %s.', mergedFileNames.length, mergedFileNames.join(', '))
+        nonMergedFileNames.length && log.debug('%s existing files %s cannot be merged. Skipped.', nonMergedFileNames.length, nonMergedFileNames.join(', '))
 
         if (force && nonMergedFileNames.length) {
           await copyFiles(srcPath, destPath, nonMergedFileNames, destPathIsFile, true)
-          console.log('Overwrote %d existing files %s', nonMergedFileNames.length, nonMergedFileNames.join(', '))
+          log.debug('Overwrote %d existing files %s', nonMergedFileNames.length, nonMergedFileNames.join(', '))
         }
       }
       else if (force) {
         await copyFiles(srcPath, destPath, existingFiles, destPathIsFile, true)
-        console.log('Overwrote %d existing files %s', existingFiles.length, existingFiles.join(', '))
+        log.debug('Overwrote %d existing files %s', existingFiles.length, existingFiles.join(', '))
       }
       else {
-        console.log('Skipped %d existing files %s', existingFiles.length, existingFiles.join(', '))
+        log.debug('Skipped %d existing files %s', existingFiles.length, existingFiles.join(', '))
       }
     }
 
     if (nonexistingFiles.length) {
       await copyFiles(srcPath, destPath, nonexistingFiles, destPathIsFile)
-      console.log('Copied %d files %s', nonexistingFiles.length, nonexistingFiles.join(', '))
+      log.debug('Copied %d files %s', nonexistingFiles.length, nonexistingFiles.join(', '))
     }
   }
   catch (error) {

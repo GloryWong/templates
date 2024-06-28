@@ -1,6 +1,7 @@
 import { basename, extname, join } from 'node:path'
 import { copy, ensureDir } from 'fs-extra/esm'
 import { getTmpPath } from './getTmpPath.js'
+import { logger } from './logger.js'
 
 function pad(val: string | number) {
   return String(val).padStart(2, '0')
@@ -19,6 +20,6 @@ export async function backUpFile(path: string, destDirPath?: string) {
   const dest = join(backupDir, `${rawFileName}.backup-${getDateTime()}${extName}`)
 
   await copy(path, dest)
-  console.log('Original %s was backed up to %s', basename(path), dest)
+  logger.debug('Original %s was backed up to %s', basename(path), dest)
   return dest
 }

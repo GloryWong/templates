@@ -5,6 +5,7 @@ import { Argument, program } from 'commander'
 import { readPackage } from 'read-pkg'
 import { ids } from './part-configs/index.js'
 import { applyPartTemplate } from './applyPartTemplate.js'
+import { logger } from './utils/logger.js'
 
 const version = (await readPackage({ cwd: join(import.meta.dirname, '..') })).version
 
@@ -19,7 +20,7 @@ program.command('apply')
   .option('-m, --merge', 'should merge existing files. (JSON only)')
   .option('--install', 'install package dependencies after part template is applied')
   .action((partId, options, command) => {
-    console.log(partId, options, command.name())
+    logger('CLI').debug('Command: %s, arg: %s, options: %o', command.name(), partId, options)
     return applyPartTemplate(partId, options)
   })
 
