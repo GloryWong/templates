@@ -1,9 +1,10 @@
 import { join } from 'node:path'
 import { readdir } from 'node:fs/promises'
+import process from 'node:process'
 import { downloadTemplate } from 'giget'
 import { updatePackage } from 'write-package'
 import ora from 'ora'
-import { isLoggerEnabled } from '@gloxy/logger'
+import { enableLogger } from '@gloxy/logger'
 import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
@@ -15,10 +16,15 @@ import { logger } from './utils/logger.js'
 
 export interface ApplyPartTemplateOptions extends CopyTemplateOptions {
   /**
-   * if install node package dependencies
+   * install node package dependencies
    * @default false
    */
   install?: boolean
+  /**
+   * display verbose logs
+   * @default false
+   */
+  verbose?: boolean
 }
 
 export async function applyPartTemplate(partId: string, options: ApplyPartTemplateOptions = {}) {
@@ -27,16 +33,19 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     if (!config)
       throw new Error(`Invalid partId`)
 
-    const { force, merge, variables, install = false } = options
+    const { force, merge, variables, install = false, verbose = false } = options
     const log = logger('applyPartTemplate')
+    if (verbose) {
+      enableLogger('templates:*')
+    }
     const spinner = ora({
-      isSilent: isLoggerEnabled('templates:*'),
+      isSilent: process.env.NODE_ENV === 'test' || verbose,
     })
 
-    config.skipTemplate && log.debug('Skip template download and copy. %s', partId)
+    config.skipTemplate && log.info('Skip template download and copy. %s', partId)
     if (!config.skipTemplate) {
       // Download parts to tmp
-      log.debug('Downloading template from %s', config.src)
+      log.info('Downloading template from %s', config.src)
       spinner.start('Downloading template...')
       const tmp = await getTmpPath(TEMPLATE_DOWNLOAD_DIR)
       const { source, dir } = await downloadTemplate(config.src, {
@@ -48,10 +57,10 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
       }
 
       spinner.succeed('Downloaded template')
-      log.debug('Downloaded template to %s', dir)
+      log.info('Downloaded template to %s', dir)
 
       // Copy tmp to destination
-      log.debug('Copying template to %s', config.destDir)
+      log.info('Copying template to %s', config.destDir)
       spinner.start('Copying template...')
       await copyTemplate(dir, config.destDir, {
         force,
@@ -62,30 +71,30 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
         },
       })
       spinner.succeed('Copied template')
-      log.debug('Copied template. %s', partId)
+      log.info('Copied template for partId %s', partId)
     }
 
     // Update package json
     const { packageJsonUpdates } = config
     if (packageJsonUpdates) {
-      log.debug('Updating package json. %s', partId)
+      log.info('Updating package json for partId %s', partId)
       spinner.start('Updating package.json...')
       await updatePackage(packageJsonUpdates)
       spinner.succeed('Updated package.json')
-      log.debug('Updated package json. %s', partId)
+      log.info('Updated package json for partId %s', partId)
     }
 
-    log.debug('Clear downloaded template. %s', partId)
+    log.info('Clear downloaded template for partId %s', partId)
     await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
 
-    log.debug('Applied part template \'%s\' successfully!', partId)
+    log.info('Applied part template \'%s\' successfully!', partId)
     // Install dependencies
     if (install) {
-      log.debug('Installing dependencies. %s', partId)
+      log.info('Installing dependencies for partId %s', partId)
       spinner.start('Installing dependencies...')
       await installDeps(config)
       spinner.succeed('Installed dependencies')
-      log.debug('Installed dependencies. %s', partId)
+      log.info('Installed dependencies for partId %s', partId)
     }
   }
   catch (error: any) {

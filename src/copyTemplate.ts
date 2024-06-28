@@ -9,6 +9,8 @@ import { mergeJsonFiles } from './utils/mergeJsonFiles.js'
 import { assignTemplateVariables } from './assignTemplateVariables.js'
 import { logger } from './utils/logger.js'
 
+const log = logger('copyTemplate')
+
 export interface CopyTemplateOptions extends CopyOptions {
   /**
    * Variables used in templates
@@ -27,6 +29,8 @@ export interface CopyTemplateOptions extends CopyOptions {
 }
 
 async function whichDestFilesExist(srcPath: string, destPath: string, pathIsFile: boolean) {
+  log.info('Checking existing files in workspace')
+
   const srcFiles = pathIsFile ? [basename(srcPath)] : await readdir(srcPath)
   const destFiles = pathIsFile ? [basename(destPath)] : await readdir(destPath)
 
@@ -40,6 +44,8 @@ async function whichDestFilesExist(srcPath: string, destPath: string, pathIsFile
       nonexistingFiles.push(lf)
   })
 
+  log.info('Existing files %o', existingFiles)
+
   return {
     existingFiles,
     nonexistingFiles,
@@ -47,13 +53,16 @@ async function whichDestFilesExist(srcPath: string, destPath: string, pathIsFile
 }
 
 async function backupFiles(fileNames: string[], path: string, pathIsFile: boolean) {
+  log.info('Backing up files %o', fileNames)
   for (let index = 0; index < fileNames.length; index++) {
     const fileName = fileNames[index]
     await backUpFile(pathIsFile ? path : join(path, fileName))
   }
+  log.info('Backed up files %o', fileNames)
 }
 
 async function copyFiles(srcPath: string, destPath: string, fileNames: string[], pathIsFile: boolean, backUp = false) {
+  log.info('Copying files %o from %s to %s', fileNames, srcPath, destPath)
   backUp && await backupFiles(fileNames, destPath, pathIsFile)
   if (pathIsFile) {
     await copy(srcPath, destPath)
@@ -64,6 +73,7 @@ async function copyFiles(srcPath: string, destPath: string, fileNames: string[],
       await copy(join(srcPath, fileName), join(destPath, fileName))
     }
   }
+  log.info('Copied files %o', fileNames)
 }
 
 async function mergeFiles(srcPath: string, destPath: string, fileNames: string[], pathIsFile: boolean) {
@@ -100,7 +110,6 @@ async function mergeFiles(srcPath: string, destPath: string, fileNames: string[]
  */
 export async function copyTemplate(srcPath: string, destPath: string, options: CopyTemplateOptions = {}) {
   const { variables, force = false, merge = false } = options
-  const log = logger('copyTemplate')
   try {
     if (!(await pathExists(srcPath)))
       throw new Error(`${srcPath} does not exist`)
@@ -117,6 +126,7 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
 
     // Assign variables to src
     if (variables) {
+      log.info('Assigning template variables... %o', variables)
       // use variable for the src file
       if (srcPathIsFile) {
         await assignTemplateVariables(srcPath, variables)
@@ -130,6 +140,7 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
           await assignTemplateVariables(filePath, variables)
         }
       }
+      log.info('Assigned template variables')
     }
 
     const { existingFiles, nonexistingFiles } = await whichDestFilesExist(srcPath, destPath, destPathIsFile)
@@ -137,26 +148,26 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
     if (existingFiles.length) {
       if (merge) {
         const { mergedFileNames, nonMergedFileNames } = await mergeFiles(srcPath, destPath, existingFiles, destPathIsFile)
-        mergedFileNames.length && log.debug('Merged %s existing files %s.', mergedFileNames.length, mergedFileNames.join(', '))
-        nonMergedFileNames.length && log.debug('%s existing files %s cannot be merged. Skipped.', nonMergedFileNames.length, nonMergedFileNames.join(', '))
+        mergedFileNames.length && log.warn('Merged %s existing files %o.', mergedFileNames.length, mergedFileNames)
+        nonMergedFileNames.length && log.info('%s existing files %o cannot be merged. Skipped.', nonMergedFileNames.length, nonMergedFileNames)
 
         if (force && nonMergedFileNames.length) {
           await copyFiles(srcPath, destPath, nonMergedFileNames, destPathIsFile, true)
-          log.debug('Overwrote %d existing files %s', nonMergedFileNames.length, nonMergedFileNames.join(', '))
+          log.warn('Overwrote %d existing files %o', nonMergedFileNames.length, nonMergedFileNames)
         }
       }
       else if (force) {
         await copyFiles(srcPath, destPath, existingFiles, destPathIsFile, true)
-        log.debug('Overwrote %d existing files %s', existingFiles.length, existingFiles.join(', '))
+        log.warn('Overwrote %d existing files %o', existingFiles.length, existingFiles)
       }
       else {
-        log.debug('Skipped %d existing files %s', existingFiles.length, existingFiles.join(', '))
+        log.info('Skipped %d existing files %o', existingFiles.length, existingFiles)
       }
     }
 
     if (nonexistingFiles.length) {
       await copyFiles(srcPath, destPath, nonexistingFiles, destPathIsFile)
-      log.debug('Copied %d files %s', nonexistingFiles.length, nonexistingFiles.join(', '))
+      log.info('Copied %d files %o', nonexistingFiles.length, nonexistingFiles)
     }
   }
   catch (error) {

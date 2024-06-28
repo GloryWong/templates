@@ -19,8 +19,10 @@ program.command('apply')
   .option('-f, --force', 'should overwrite existing files')
   .option('-m, --merge', 'should merge existing files. (JSON only)')
   .option('--install', 'install package dependencies after part template is applied')
+  .option('-v, --verbose', 'display verbose logs')
+  .showHelpAfterError(true)
   .action((partId, options, command) => {
-    logger('CLI').debug('Command: %s, arg: %s, options: %o', command.name(), partId, options)
+    logger('CLI').info('Command: %s, arg: %s, options: %o', command.name(), partId, options)
     return applyPartTemplate(partId, options)
   })
 

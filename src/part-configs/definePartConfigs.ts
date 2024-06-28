@@ -1,3 +1,4 @@
+import process from 'node:process'
 import type { PackageJson, SetRequired } from 'type-fest'
 import type { TemplateVariables } from '../types.js'
 import { PART_TEMPLATE_LOCATION } from '../constants.js'
@@ -41,7 +42,7 @@ export async function definePartConfigs(configs: DefineConfigs) {
   const result: PartConfigs = new Map()
   for (let index = 0; index < configs.length; index++) {
     const config = configs[index]
-    const item: Record<string, any> = { id: '', src: '', destDir: '.' }
+    const item: Record<string, any> = { id: '', src: '', destDir: process.cwd() }
     const keys = Object.keys(config) as (keyof DefineConfigsItem)[]
     for (let index = 0; index < keys.length; index++) {
       const key = keys[index]

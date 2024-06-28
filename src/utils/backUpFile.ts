@@ -20,6 +20,6 @@ export async function backUpFile(path: string, destDirPath?: string) {
   const dest = join(backupDir, `${rawFileName}.backup-${getDateTime()}${extName}`)
 
   await copy(path, dest)
-  logger.debug('Original %s was backed up to %s', basename(path), dest)
+  logger.warn('Original %s was backed up to %s', basename(path), dest)
   return dest
 }
