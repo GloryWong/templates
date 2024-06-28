@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/GloryWong/templates/compare/v1.5.0...v1.5.1) (2024-06-28)
+
+
+### Bug Fixes
+
+* cli apply argument id changes to part-id & update readme ([6887721](https://github.com/GloryWong/templates/commit/68877211116f67957c4a5c147d750fc33f0a0398))
+
 ## [1.5.0](https://github.com/GloryWong/templates/compare/v1.4.1...v1.5.0) (2024-06-28)
 
 
