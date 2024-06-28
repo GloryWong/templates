@@ -10,12 +10,12 @@ import { logger } from './utils/logger.js'
 const version = (await readPackage({ cwd: join(import.meta.dirname, '..') })).version
 
 program
-  .name('template')
+  .name('tmpl')
   .version(version)
 
 program.command('apply')
   .description('Apply a part template. Part templates are applied to current working directory by default.')
-  .addArgument(new Argument('<id>', 'part template id.').choices(ids))
+  .addArgument(new Argument('<part-id>', 'part template id.').choices(ids))
   .option('-f, --force', 'should overwrite existing files')
   .option('-m, --merge', 'should merge existing files. (JSON only)')
   .option('--install', 'install package dependencies after part template is applied')

@@ -11,6 +11,9 @@ importers:
       '@gloxy/logger':
         specifier: ^2.1.4
         version: 2.1.4
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
       commander:
         specifier: ^12.1.0
         version: 12.1.0
@@ -29,6 +32,9 @@ importers:
       read-pkg:
         specifier: ^9.0.1
         version: 9.0.1
+      type-fest:
+        specifier: ^4.20.1
+        version: 4.20.1
       write-package:
         specifier: ^7.0.1
         version: 7.0.1
@@ -45,9 +51,6 @@ importers:
       '@tsconfig/node20':
         specifier: ^20.1.4
         version: 20.1.4
-      '@types/fs-extra':
-        specifier: ^11.0.4
-        version: 11.0.4
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -78,9 +81,6 @@ importers:
       tsx:
         specifier: ^4.15.8
         version: 4.15.8
-      type-fest:
-        specifier: ^4.20.1
-        version: 4.20.1
       typescript:
         specifier: ^5.5.2
         version: 5.5.2
