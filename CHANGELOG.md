@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/GloryWong/templates/compare/v1.6.0...v1.7.0) (2024-07-12)
+
+
+### Features
+
+* **applyPartTemplates:** combine deps and install together ([937f2bc](https://github.com/GloryWong/templates/commit/937f2bc453615da103442eb3b970daa550341d61))
+
 ## [1.6.0](https://github.com/GloryWong/templates/compare/v1.5.1...v1.6.0) (2024-07-12)
 
 
