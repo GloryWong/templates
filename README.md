@@ -25,7 +25,7 @@ pnpm add @gloxy/templates
 ```
 ### API
 
-* `applyPartTemplates(<part-id>, [options])`
+* `applyPartTemplate(<part-id>, [options])`
 
   * `part-id`: existing part templates id. Refer to [configs][2]
 
@@ -36,10 +36,17 @@ pnpm add @gloxy/templates
     * install: install package dependencies that the template depends
     * verbose: display verbose logs
 
-```typescript
-import { applyPartTemplates } from '@gloxy/templates'
+* `applyPartTemplates(<part-ids>, [options])`
 
-applyPartTemplates('vscode', { force: true, merge: true, verbose: true, install: true })
+  * `part-ids`: array of existing part templates ids.
+
+  * options: same as the options to applyPartTemplate
+
+```typescript
+import { applyPartTemplate, applyPartTemplates } from '@gloxy/templates'
+
+applyPartTemplate('vscode', { force: true, merge: true, verbose: true, install: true })
+applyPartTemplates(['vscode', 'npm', 'lintstaged'], { force: true, merge: true, verbose: true, install: true })
 ```
 
 ### CLI
@@ -48,10 +55,10 @@ applyPartTemplates('vscode', { force: true, merge: true, verbose: true, install:
 $ pnpm add -g @gloxy/templates
 ```
 
-The apply command passes the argument (`part-id`) and options to method `applyPartTemplates()` under the hood.
+The `apply` command passes the argument (`part-id...`) and options to method `applyPartTemplates()` under the hood.
 
 ```bash
-$ tmpl apply [options] <part-id>
+$ tmpl apply [options] <part-id...>
 ```
 
 ## Authors
