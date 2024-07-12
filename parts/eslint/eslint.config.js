@@ -6,4 +6,13 @@ export default await antfu({
   plugins: {
     perfectionist,
   },
+  typescript: {
+    overrides: {
+      'ts/no-unused-expressions': ['error', {
+        allowShortCircuit: true,
+        allowTernary: true,
+        allowTaggedTemplates: true,
+      }],
+    },
+  },
 })

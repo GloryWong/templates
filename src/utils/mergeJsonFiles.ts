@@ -26,7 +26,7 @@ export async function mergeJsonFiles(srcFilePath: string, destFilePath: string, 
     })
     return true
   }
-  catch (error: any) {
+  catch {
     return false
   }
 }
