@@ -93,7 +93,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
       try {
         log.info('Installing dependencies for partId %s', partId)
         spinner.start('Installing dependencies...')
-        await installDeps(config)
+        await installDeps(config.packageJsonUpdates ?? {})
         spinner.succeed('Installed dependencies')
         log.info('Installed dependencies for partId %s', partId)
       }

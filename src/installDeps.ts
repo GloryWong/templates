@@ -1,7 +1,6 @@
 import { exec as _exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import type { PackageJson } from 'type-fest'
-import type { PartConfig } from './part-configs/definePartConfigs.js'
 import { logger } from './utils/logger.js'
 
 const exec = promisify(_exec)
@@ -22,17 +21,17 @@ function _updateDeps(nameVersions: string[]) {
   return exec(cmd)
 }
 
-export async function installDeps(config: PartConfig) {
-  const { dependencies, devDependencies, peerDependencies, optionalDependencies } = config.packageJsonUpdates ?? {}
+export async function installDeps(packageJsonUpdates: PackageJson) {
+  const { dependencies, devDependencies, peerDependencies, optionalDependencies } = packageJsonUpdates ?? {}
 
   if (!dependencies && !devDependencies && !peerDependencies && !optionalDependencies) {
     log.info('No dependencies need to be installed')
     return
   }
 
-  log.info('Installing package dependencies...')
   try {
     const nameVersions = createPkgNameVersions(dependencies, devDependencies, peerDependencies, optionalDependencies)
+    log.info('Installing package dependencies %s...', nameVersions.join(', '))
     await _updateDeps(nameVersions)
     log.info('Installed package dependencies')
   }
