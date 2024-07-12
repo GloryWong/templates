@@ -44,6 +44,7 @@
   "dependencies": {
     "@gloxy/logger": "^2.2.0",
     "@types/fs-extra": "^11.0.4",
+    "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "deepmerge": "^4.3.1",
     "fs-extra": "^11.2.0",

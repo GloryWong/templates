@@ -90,11 +90,17 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     log.info('Applied part template \'%s\' successfully!', partId)
     // Install dependencies
     if (install) {
-      log.info('Installing dependencies for partId %s', partId)
-      spinner.start('Installing dependencies...')
-      await installDeps(config)
-      spinner.succeed('Installed dependencies')
-      log.info('Installed dependencies for partId %s', partId)
+      try {
+        log.info('Installing dependencies for partId %s', partId)
+        spinner.start('Installing dependencies...')
+        await installDeps(config)
+        spinner.succeed('Installed dependencies')
+        log.info('Installed dependencies for partId %s', partId)
+      }
+      catch {
+        spinner.warn('Failed to install dependencies')
+        log.error('Failed to install dependencies for partId %s', partId)
+      }
     }
   }
   catch (error: any) {
