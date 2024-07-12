@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/GloryWong/templates/compare/v1.5.1...v1.6.0) (2024-07-12)
+
+
+### Features
+
+* **parts:** update eslint config ([ec0232c](https://github.com/GloryWong/templates/commit/ec0232c6afa87530cdb446c15df57a11bae8a489))
+* support applying multiple parts ([9a796a7](https://github.com/GloryWong/templates/commit/9a796a7d4b54bf2d6c756a221a118ad4aa2dbd50))
+
 ## [1.5.1](https://github.com/GloryWong/templates/compare/v1.5.0...v1.5.1) (2024-06-28)
 
 
