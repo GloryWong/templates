@@ -105,11 +105,13 @@ async function mergeFiles(srcPath: string, destPath: string, fileNames: string[]
   }
 }
 
+type ExistingFilesHandle = 'none' | 'skiped' | 'overwrote' | 'merged' | 'overwrote-merged'
 /**
  * Note: variables are only assigned for first level files now
  */
 export async function copyTemplate(srcPath: string, destPath: string, options: CopyTemplateOptions = {}) {
   const { variables, force = false, merge = false } = options
+  let existingFilesHandle: ExistingFilesHandle = 'none'
   try {
     if (!(await pathExists(srcPath)))
       throw new Error(`${srcPath} does not exist`)
@@ -151,17 +153,21 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
         mergedFileNames.length && log.warn('Merged %s existing files %o.', mergedFileNames.length, mergedFileNames)
         nonMergedFileNames.length && log.info('%s existing files %o cannot be merged. Skipped.', nonMergedFileNames.length, nonMergedFileNames)
 
+        existingFilesHandle = 'merged'
         if (force && nonMergedFileNames.length) {
           await copyFiles(srcPath, destPath, nonMergedFileNames, destPathIsFile, true)
           log.warn('Overwrote %d existing files %o', nonMergedFileNames.length, nonMergedFileNames)
+          existingFilesHandle = 'overwrote-merged'
         }
       }
       else if (force) {
         await copyFiles(srcPath, destPath, existingFiles, destPathIsFile, true)
         log.warn('Overwrote %d existing files %o', existingFiles.length, existingFiles)
+        existingFilesHandle = 'overwrote'
       }
       else {
         log.info('Skipped %d existing files %o', existingFiles.length, existingFiles)
+        existingFilesHandle = 'skiped'
       }
     }
 
@@ -169,6 +175,8 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
       await copyFiles(srcPath, destPath, nonexistingFiles, destPathIsFile)
       log.info('Copied %d files %o', nonexistingFiles.length, nonexistingFiles)
     }
+
+    return existingFilesHandle
   }
   catch (error) {
     throw new Error(`Failed to copy template. ${String(error)}`)

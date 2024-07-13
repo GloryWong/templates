@@ -62,7 +62,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
       // Copy tmp to destination
       log.info('Copying template to %s', config.destDir)
       spinner.start('Copying template...')
-      await copyTemplate(dir, config.destDir, {
+      const existingFilesHandle = await copyTemplate(dir, config.destDir, {
         force,
         merge,
         variables: {
@@ -70,7 +70,24 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
           ...variables,
         },
       })
-      spinner.succeed('Copied template')
+
+      switch (existingFilesHandle) {
+        case 'merged':
+          spinner.info('Copied template. Some existing files are merged')
+          break
+        case 'overwrote-merged':
+          spinner.info('Copied template. Some existing files are merged or overwritten')
+          break
+        case 'overwrote':
+          spinner.info('Copied template. Some existing files are overwritten')
+          break
+        case 'skiped':
+          spinner.info('Copied template. skiped existing files')
+          break
+        case 'none':
+        default:
+          spinner.succeed('Copied template')
+      }
       log.info('Copied template for partId %s', partId)
     }
 
