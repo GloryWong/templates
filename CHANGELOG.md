@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/GloryWong/templates/compare/v1.7.0...v1.7.1) (2024-07-13)
+
+
+### Bug Fixes
+
+* **applyPartTemplate:** show specific file handle infos after copyTemplate ([2223d70](https://github.com/GloryWong/templates/commit/2223d70a06d33db302a3de8c4bd0d36a4571d1e8))
+
 ## [1.7.0](https://github.com/GloryWong/templates/compare/v1.6.0...v1.7.0) (2024-07-12)
 
 
