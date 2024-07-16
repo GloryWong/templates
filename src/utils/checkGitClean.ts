@@ -7,9 +7,10 @@ export async function checkGitClean(cwd = process.cwd()) {
   try {
     const repoRoot = (await exec('git rev-parse --show-toplevel')).stdout.trim()
     const currentDir = path.relative(repoRoot, cwd)
+    const excludeFilePath = path.resolve(import.meta.dirname, 'git-exclude-patterns')
 
     // Get untracked files
-    const untrackedFiles = (await exec('git ls-files --others --exclude-standard')).stdout.trim()
+    const untrackedFiles = (await exec(`git ls-files --others --exclude-standard --exclude-from=${excludeFilePath}`)).stdout.trim()
 
     // Get unstaged files
     const unstagedFiles = (await exec('git diff --name-only')).stdout.trim()
@@ -18,9 +19,10 @@ export async function checkGitClean(cwd = process.cwd()) {
     const uncommittedFiles = (await exec('git diff --cached --name-only')).stdout.trim()
 
     // Filter files in the current directory
-    const untracked = untrackedFiles.split(EOL)
-    const unstaged = unstagedFiles.split(EOL).filter(file => file.startsWith(`${currentDir ? `${currentDir}/` : ''}`)).map(file => file.replace(`${currentDir ? `${currentDir}/` : ''}`, ''))
-    const uncommitted = uncommittedFiles.split('\n').filter(file => file.startsWith(`${currentDir ? `${currentDir}/` : ''}`)).map(file => file.replace(`${currentDir ? `${currentDir}/` : ''}`, ''))
+    const CURRENT_DIR_PATH_PREFIX = `${currentDir ? `${currentDir}/` : ''}`
+    const untracked = untrackedFiles.split(EOL).filter(v => !!v)
+    const unstaged = unstagedFiles.split(EOL).filter(file => file.startsWith(CURRENT_DIR_PATH_PREFIX)).map(file => file.replace(CURRENT_DIR_PATH_PREFIX, '')).filter(v => !!v)
+    const uncommitted = uncommittedFiles.split('\n').filter(file => file.startsWith(CURRENT_DIR_PATH_PREFIX)).map(file => file.replace(CURRENT_DIR_PATH_PREFIX, '')).filter(v => !!v)
 
     return {
       untracked,

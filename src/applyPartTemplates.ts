@@ -6,18 +6,20 @@ import merge from 'deepmerge'
 import type { PackageJson } from 'type-fest'
 import ora from 'ora'
 import { enableLogger } from '@gloxy/logger'
+import { confirm } from '@inquirer/prompts'
 import { type ApplyPartTemplateOptions, applyPartTemplate } from './applyPartTemplate.js'
 import { configs } from './part-configs/configs.js'
-import { installDeps } from './installDeps.js'
 import { logger } from './utils/logger.js'
+import { extractPackageDeps } from './utils/extractPackageDeps.js'
+import { installPackageDeps } from './utils/installPackageDeps.js'
 
-async function installMultiPartDeps(partIds: string[]) {
+function extractMultiPartDeps(partIds: string[]) {
   const packageJsonUpdates = partIds.reduce<PackageJson>((pre, partId) => {
     const packageJsonUpdates = configs.get(partId)?.packageJsonUpdates
     return packageJsonUpdates ? merge(pre, packageJsonUpdates) : pre
   }, {})
 
-  await installDeps(packageJsonUpdates)
+  return extractPackageDeps(packageJsonUpdates)
 }
 
 export async function applyPartTemplates(partIds: string[], options: ApplyPartTemplateOptions = {}) {
@@ -37,7 +39,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
       const partId = partIds[index]
       process.env.NODE_ENV !== 'test' && console.log(chalk.blue('[%s]'), partId)
       try {
-        await applyPartTemplate(partId, { ...options, install: false })
+        await applyPartTemplate(partId, { ...options, skipInstall: true })
         successfulPartIds.push(partId)
         process.env.NODE_ENV !== 'test' && console.log(chalk.green('Apply %s successfully%s'), partId, EOL)
       }
@@ -48,25 +50,29 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
     }
 
     // Install deps
-    if (install) {
-      const log = logger('applyPartTemplates')
-      if (verbose) {
-        enableLogger('templates:*')
-      }
-      const spinner = ora({
-        isSilent: process.env.NODE_ENV === 'test' || verbose,
-      })
+    const { count, ...deps } = extractMultiPartDeps(partIds)
+    if (count > 0) {
+      if (install || await confirm({ message: 'New package dependencies are added. Install them?' })) {
+        const log = logger('applyPartTemplates')
+        if (verbose) {
+          enableLogger('templates:*')
+        }
+        const spinner = ora({
+          isSilent: process.env.NODE_ENV === 'test' || verbose,
+        })
 
-      spinner.start('Installing dependencies...')
-      log.info('Installing dependencies...')
-      try {
-        await installMultiPartDeps(partIds)
-        spinner.succeed('Installed dependencies')
-        log.info('Installed dependencies')
-      }
-      catch {
-        spinner.warn('Failed to install dependencies. Manually install them using `pnpm update`.')
-        log.error('Failed to install dependencies')
+        spinner.start('Installing dependencies...')
+        log.info('Installing dependencies...')
+        try {
+          await installPackageDeps(...Object.values(deps))
+          spinner.succeed('Installed dependencies')
+          log.info('Installed dependencies')
+        }
+        catch {
+          spinner.warn('Failed to install dependencies. Manually install them using `pnpm update`.')
+          log.error('Failed to install dependencies')
+        }
+        console.log()
       }
     }
 

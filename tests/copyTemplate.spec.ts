@@ -98,18 +98,9 @@ describe('copyTemplate', () => {
       mockFs.restore()
     })
 
-    it('should skip existing dest files by default', async () => {
-      const origianlFile1 = (await readFile('dest/file1.json'))
-      await copyTemplate('src', 'dest')
-      expect(await readFile('dest/file1.json')).toEqual(origianlFile1)
-      expect((await readFile('dest/file2.txt')).toString()).toEqual('file2')
-      expect(await readFile('dest/file3.txt')).toEqual(await readFile('src/file3.txt'))
-    })
-
-    it('should merge existing valid json files and overwrite non-json files when use force', async () => {
+    it('should merge existing valid json files and overwrite non-json files', async () => {
       const originalDestFile5 = await readJson('dest/file5.json')
       await copyTemplate('src', 'dest', {
-        force: true,
         variables: {
           var1: 'a',
           var2: true,

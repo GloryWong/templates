@@ -5,14 +5,16 @@ import { downloadTemplate } from 'giget'
 import { updatePackage } from 'write-package'
 import ora from 'ora'
 import { enableLogger } from '@gloxy/logger'
+import { confirm } from '@inquirer/prompts'
 import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
 import { copyTemplate } from './copyTemplate.js'
 import { TEMPLATE_DOWNLOAD_DIR } from './constants.js'
 import { configs } from './part-configs/index.js'
-import { installDeps } from './installDeps.js'
+import { installPackageDeps } from './utils/installPackageDeps.js'
 import { logger } from './utils/logger.js'
+import { extractPackageDeps } from './utils/extractPackageDeps.js'
 
 export interface ApplyPartTemplateOptions extends CopyTemplateOptions {
   /**
@@ -20,6 +22,12 @@ export interface ApplyPartTemplateOptions extends CopyTemplateOptions {
    * @default false
    */
   install?: boolean
+  /**
+   * When `install` is set to false, a prompt will show to users to confirm whether install dependencies,
+   * this option can skip installation
+   * @default false
+   */
+  skipInstall?: boolean
   /**
    * display verbose logs
    * @default false
@@ -33,7 +41,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     if (!config)
       throw new Error(`Invalid partId`)
 
-    const { force, variables, install = false, verbose = false } = options
+    const { variables, install = false, skipInstall = false, verbose = false } = options
     const log = logger('applyPartTemplate')
     if (verbose) {
       enableLogger('templates:*')
@@ -63,7 +71,6 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
       log.info('Copying template to %s', config.destDir)
       spinner.start('Copying template...')
       const existingFilesHandle = await copyTemplate(dir, config.destDir, {
-        force,
         variables: {
           ...config.defaultVariables,
           ...variables,
@@ -72,16 +79,13 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
 
       switch (existingFilesHandle) {
         case 'merged':
-          spinner.info('Copied template. Some existing files are merged')
+          spinner.warn('Copied template. Some existing files are merged')
           break
         case 'overwrote-merged':
-          spinner.info('Copied template. Some existing files are merged or overwritten')
+          spinner.warn('Copied template. Some existing files are merged or overwritten')
           break
         case 'overwrote':
-          spinner.info('Copied template. Some existing files are overwritten')
-          break
-        case 'skiped':
-          spinner.info('Copied template. skiped existing files')
+          spinner.warn('Copied template. Some existing files are overwritten')
           break
         case 'none':
         default:
@@ -104,12 +108,21 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
 
     log.info('Applied part template \'%s\' successfully!', partId)
+
     // Install dependencies
-    if (install) {
+
+    if (skipInstall)
+      return
+
+    const { count, ...deps } = extractPackageDeps(packageJsonUpdates)
+    if (count === 0)
+      return
+
+    if (install || await confirm({ message: 'New package dependencies are added. Install them?' })) {
       try {
         log.info('Installing dependencies for partId %s', partId)
         spinner.start('Installing dependencies...')
-        await installDeps(config.packageJsonUpdates ?? {})
+        await installPackageDeps(...Object.values(deps))
         spinner.succeed('Installed dependencies')
         log.info('Installed dependencies for partId %s', partId)
       }

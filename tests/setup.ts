@@ -45,6 +45,16 @@ vi.mock('../src/part-configs/configs.js', (): { configs: PartConfigs } => {
   })
 })
 
+vi.mock('@inquirer/prompts', () => ({
+  confirm: vi.fn(() => Promise.resolve(true)),
+}))
+
+vi.mock('../src/utils/installPackageDeps.js', () => ({
+  installPackageDeps: vi.fn(() => Promise.resolve()),
+}))
+
 afterAll(() => {
   vi.doUnmock('../src/part-configs/index.js')
+  vi.doUnmock('@inquirer/prompts')
+  vi.doUnmock('../src/utils/installPackageDeps.js')
 })

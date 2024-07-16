@@ -1,9 +1,6 @@
-import { exec as _exec } from 'node:child_process'
-import { promisify } from 'node:util'
 import type { PackageJson } from 'type-fest'
-import { logger } from './utils/logger.js'
-
-const exec = promisify(_exec)
+import { logger } from './logger.js'
+import { exec } from './exec.js'
 
 type Deps = PackageJson['dependencies']
 
@@ -21,16 +18,9 @@ function _updateDeps(nameVersions: string[]) {
   return exec(cmd)
 }
 
-export async function installDeps(packageJsonUpdates: PackageJson) {
-  const { dependencies, devDependencies, peerDependencies, optionalDependencies } = packageJsonUpdates ?? {}
-
-  if (!dependencies && !devDependencies && !peerDependencies && !optionalDependencies) {
-    log.info('No dependencies need to be installed')
-    return
-  }
-
+export async function installPackageDeps(...deps: Deps[]) {
   try {
-    const nameVersions = createPkgNameVersions(dependencies, devDependencies, peerDependencies, optionalDependencies)
+    const nameVersions = createPkgNameVersions(...deps)
     log.info('Installing package dependencies %s...', nameVersions.join(', '))
     await _updateDeps(nameVersions)
     log.info('Installed package dependencies')
