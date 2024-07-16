@@ -33,7 +33,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     if (!config)
       throw new Error(`Invalid partId`)
 
-    const { force, merge, variables, install = false, verbose = false } = options
+    const { force, variables, install = false, verbose = false } = options
     const log = logger('applyPartTemplate')
     if (verbose) {
       enableLogger('templates:*')
@@ -64,7 +64,6 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
       spinner.start('Copying template...')
       const existingFilesHandle = await copyTemplate(dir, config.destDir, {
         force,
-        merge,
         variables: {
           ...config.defaultVariables,
           ...variables,

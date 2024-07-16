@@ -17,15 +17,10 @@ export interface CopyTemplateOptions extends CopyOptions {
    */
   variables?: TemplateVariables
   /**
-   * Overwrite existing files
+   * Overwrite existing files and try to merge JSON files
    * @default false
    */
   force?: boolean
-  /**
-   * merge to existing destination files. **Support only JSON file**.
-   * @default false
-   */
-  merge?: boolean
 }
 
 async function whichDestFilesExist(srcPath: string, destPath: string, pathIsFile: boolean) {
@@ -110,7 +105,7 @@ type ExistingFilesHandle = 'none' | 'skiped' | 'overwrote' | 'merged' | 'overwro
  * Note: variables are only assigned for first level files now
  */
 export async function copyTemplate(srcPath: string, destPath: string, options: CopyTemplateOptions = {}) {
-  const { variables, force = false, merge = false } = options
+  const { variables, force = false } = options
   let existingFilesHandle: ExistingFilesHandle = 'none'
   try {
     if (!(await pathExists(srcPath)))
@@ -148,22 +143,20 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
     const { existingFiles, nonexistingFiles } = await whichDestFilesExist(srcPath, destPath, destPathIsFile)
 
     if (existingFiles.length) {
-      if (merge) {
-        const { mergedFileNames, nonMergedFileNames } = await mergeFiles(srcPath, destPath, existingFiles, destPathIsFile)
-        mergedFileNames.length && log.warn('Merged %s existing files %o.', mergedFileNames.length, mergedFileNames)
-        nonMergedFileNames.length && log.info('%s existing files %o cannot be merged. Skipped.', nonMergedFileNames.length, nonMergedFileNames)
+      if (force) {
+        existingFilesHandle = 'overwrote'
 
-        existingFilesHandle = 'merged'
-        if (force && nonMergedFileNames.length) {
+        const { mergedFileNames, nonMergedFileNames } = await mergeFiles(srcPath, destPath, existingFiles, destPathIsFile)
+        mergedFileNames.length && log.warn('Merged %s existing JSON files %o.', mergedFileNames.length, mergedFileNames)
+        if (mergedFileNames) {
+          existingFilesHandle = 'merged'
+        }
+
+        if (nonMergedFileNames.length) {
           await copyFiles(srcPath, destPath, nonMergedFileNames, destPathIsFile, true)
           log.warn('Overwrote %d existing files %o', nonMergedFileNames.length, nonMergedFileNames)
           existingFilesHandle = 'overwrote-merged'
         }
-      }
-      else if (force) {
-        await copyFiles(srcPath, destPath, existingFiles, destPathIsFile, true)
-        log.warn('Overwrote %d existing files %o', existingFiles.length, existingFiles)
-        existingFilesHandle = 'overwrote'
       }
       else {
         log.info('Skipped %d existing files %o', existingFiles.length, existingFiles)

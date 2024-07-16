@@ -106,34 +106,9 @@ describe('copyTemplate', () => {
       expect(await readFile('dest/file3.txt')).toEqual(await readFile('src/file3.txt'))
     })
 
-    it('should overwrite existing files when use force', async () => {
-      await copyTemplate('src', 'dest', { force: true })
-      expect(await readFile('dest/file1.json')).toEqual(await readFile('src/file1.json'))
-      expect(await readFile('dest/file3.txt')).toEqual(await readFile('src/file3.txt'))
-      expect((await readFile('dest/file4.txt')).toString()).toEqual('file4')
-    })
-
-    it('should merge an existing json file when use merge', async () => {
-      const originalDestFile5 = await readJSON('dest/file5.json')
-      await copyTemplate('src', 'dest', {
-        merge: true,
-        variables: {
-          var1: 'a',
-          var2: true,
-          var3: 123,
-        },
-      })
-      expect((await readFile('dest/file1.json')).toString()).toEqual('invalid json file')
-      expect((await readFile('dest/file2.txt')).toString()).toEqual('file2')
-      expect((await readFile('dest/file3.txt')).toString()).toEqual('file3')
-      expect((await readFile('dest/file4.txt')).toString()).toEqual('file4')
-      expect(await readJSON('dest/file5.json')).toEqual(merge(originalDestFile5, await readJson('src/file5.json')))
-    })
-
-    it('should merge an existing json file and overwrite non-json files when use merge and force', async () => {
+    it('should merge existing valid json files and overwrite non-json files when use force', async () => {
       const originalDestFile5 = await readJson('dest/file5.json')
       await copyTemplate('src', 'dest', {
-        merge: true,
         force: true,
         variables: {
           var1: 'a',

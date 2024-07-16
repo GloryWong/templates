@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@gloxy/logger": "^2.2.0",
+    "@inquirer/prompts": "^5.1.2",
     "@types/fs-extra": "^11.0.4",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",

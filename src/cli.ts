@@ -17,8 +17,7 @@ program
 program.command('apply')
   .description('Apply one or more part templates. Part templates are applied to current working directory.')
   .addArgument(new Argument('<part-id...>', 'part template id.').choices(ids))
-  .option('-f, --force', 'overwrite existing files')
-  .option('-m, --merge', 'merge existing files. (JSON only)')
+  .option('-f, --force', 'overwrite existing files and try to merge valid JSON files')
   .option('--install', 'install package dependencies after part template is applied')
   .option('-v, --verbose', 'display verbose logs')
   .showHelpAfterError(true)
@@ -26,8 +25,7 @@ program.command('apply')
     if (options.verbose) {
       enableLogger('templates:*')
     }
-    const log = logger('CLI')
-    log.debug('Command: %s, arg: %s, options: %o', command.name(), partIds, options)
+    logger('CLI').debug('Command: %s, arg: %s, options: %o', command.name(), partIds, options)
     await applyPartTemplates(partIds, options)
   })
 
