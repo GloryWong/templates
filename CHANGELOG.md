@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0](https://github.com/GloryWong/templates/compare/v1.7.1...v1.8.0) (2024-07-16)
+
+
+### Features
+
+* remove the merge option. Using the force option will try to merge valid JSON files ([9f65a97](https://github.com/GloryWong/templates/commit/9f65a97e060b1c7ce7c46cd5fc5ba83dadf72344))
+
+
+### Bug Fixes
+
+* **part template:** update eslint ([74a0703](https://github.com/GloryWong/templates/commit/74a07034af4efc8650f22c4598446f1adcc25d5a))
+
 ## [1.7.1](https://github.com/GloryWong/templates/compare/v1.7.0...v1.7.1) (2024-07-13)
 
 
