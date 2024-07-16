@@ -53,7 +53,7 @@ program.command('apply')
     }
     else if ((await readdir('.')).length > 0) {
       spinner.stop()
-      const answer = await confirm({ message: 'The current directory is not a Git repository. Continuing may taint existing files. Would you like to proceed?' })
+      const answer = await confirm({ message: 'The current directory is not (or inside) a Git repository. Continuing may taint existing files. Would you like to proceed?' })
       if (!answer) {
         log.info('Exit')
         return
