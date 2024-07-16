@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/GloryWong/templates/compare/v1.8.0...v1.8.1) (2024-07-16)
+
+
+### Bug Fixes
+
+* **readme:** Update README.md ([bdbb1a2](https://github.com/GloryWong/templates/commit/bdbb1a22b8b422d1e3e4615db794564f44a638e9))
+
 ## [1.8.0](https://github.com/GloryWong/templates/compare/v1.7.1...v1.8.0) (2024-07-16)
 
 
