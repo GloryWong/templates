@@ -31,7 +31,6 @@ pnpm add @gloxy/templates
 
   * options:
     * force: overwrite existing files.
-    * merge: merge existing files. (support JSON files only)
     * variables: assigned to the template placeholders. (Key: Value)
     * install: install package dependencies that the template depends
     * verbose: display verbose logs
@@ -45,8 +44,8 @@ pnpm add @gloxy/templates
 ```typescript
 import { applyPartTemplate, applyPartTemplates } from '@gloxy/templates'
 
-applyPartTemplate('vscode', { force: true, merge: true, verbose: true, install: true })
-applyPartTemplates(['vscode', 'npm', 'lintstaged'], { force: true, merge: true, verbose: true, install: true })
+applyPartTemplate('vscode', { force: true verbose: true, install: true })
+applyPartTemplates(['vscode', 'npm', 'lintstaged'], { force: true, verbose: true, install: true })
 ```
 
 ### CLI
