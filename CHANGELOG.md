@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/GloryWong/templates/compare/v1.8.1...v2.0.0) (2024-07-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* add prompts to confirm and remove the force option
+
+### Features
+
+* add prompts to confirm and remove the force option ([a1160f7](https://github.com/GloryWong/templates/commit/a1160f7a45d5e11505a66137ced7d85ba79d02db))
+
 ## [1.8.1](https://github.com/GloryWong/templates/compare/v1.8.0...v1.8.1) (2024-07-16)
 
 
