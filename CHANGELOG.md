@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/GloryWong/templates/compare/v2.0.0...v2.1.0) (2024-07-30)
+
+
+### Features
+
+* add renovate part template and update eslint ([a9140a1](https://github.com/GloryWong/templates/commit/a9140a18ccf26648dd2185a0376998adda76b56f))
+* print suffix note of a part template ([27a9c49](https://github.com/GloryWong/templates/commit/27a9c49b8619f22e0913a3d5643703eb89a7ab4a))
+
 ## [2.0.0](https://github.com/GloryWong/templates/compare/v1.8.1...v2.0.0) (2024-07-16)
 
 
