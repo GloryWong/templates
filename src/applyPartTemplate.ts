@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { join } from 'node:path'
 import { readdir } from 'node:fs/promises'
 import process from 'node:process'
@@ -6,6 +7,7 @@ import { updatePackage } from 'write-package'
 import ora from 'ora'
 import { enableLogger } from '@gloxy/logger'
 import { confirm } from '@inquirer/prompts'
+import chalk from 'chalk'
 import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
@@ -104,10 +106,11 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
       log.info('Updated package json for partId %s', partId)
     }
 
+    log.info('Applied part template \'%s\' successfully!', partId)
+    config.suffixNote && console.log(chalk.yellow(`Note: ${config.suffixNote}`))
+
     log.info('Clear downloaded template for partId %s', partId)
     await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
-
-    log.info('Applied part template \'%s\' successfully!', partId)
 
     // Install dependencies
 

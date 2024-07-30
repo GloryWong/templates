@@ -61,6 +61,7 @@ export const configs = await definePartConfigs([
   {
     id: 'github',
     destDir: '.github/workflows',
+    suffixNote: 'Required permission: Go to your repository => Settings => Actions => Allow GitHub Actions to create and approve pull requests',
   },
   {
     id: 'typescript',
@@ -99,5 +100,6 @@ export const configs = await definePartConfigs([
   },
   {
     id: 'renovate',
+    suffixNote: 'Go to https://github.com/apps/renovate and Install (or Configure if already installed) Renovate, then add your repository to the Repository access',
   },
 ])

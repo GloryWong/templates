@@ -72,7 +72,21 @@ describe('applyPartTemplate', () => {
       })
 
       await applyPartTemplate('partId1')
+
       expect((await readdir(await getTmpPath('downloads'))).length).toEqual(0)
+    })
+
+    it('should print the suffix note after successfully applying a template when suffixNote is configured', async () => {
+      mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
+        await outputFile(join(dir, 'file3.txt'), '')
+        return ({ source: input, dir })
+      })
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(vi.fn())
+
+      await applyPartTemplate('partId5')
+
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Note: suffix note test'))
+      logSpy.mockRestore()
     })
   })
 

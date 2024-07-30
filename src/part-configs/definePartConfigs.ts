@@ -10,6 +10,10 @@ interface DefineConfigsItem {
   id: string
   description?: string
   /**
+   * Suffix note appended after template is successfully applied
+   */
+  suffixNote?: string
+  /**
    * The destination directory to which the part template will be copied.
    * Relative to process.cwd()
    * @default process.cwd()
