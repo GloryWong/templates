@@ -6,12 +6,14 @@ const file1Json = {
   a: 'a',
   b: 'b',
   c: false,
+  e: [1, 2, true, 'a', 'b'],
 }
 
 const file2Json = {
   a: 'file2',
   b: true,
   d: 1,
+  e: [1, true, 3, 'd', 'b'],
 }
 
 describe('mergeJsonFiles', () => {
@@ -47,7 +49,7 @@ describe('mergeJsonFiles', () => {
     expect(await mergeJsonFiles('src/invalid.json', 'dest/file2.json')).toBe(false)
   })
 
-  it('should successfully merge json files', async () => {
+  it('should successfully merge json files without duplicate primitives', async () => {
     const success = await mergeJsonFiles('src/file1.json', 'dest/file2.json')
     expect(success).toBe(true)
     expect(await readJSON('dest/file2.json')).toEqual({
@@ -55,6 +57,7 @@ describe('mergeJsonFiles', () => {
       b: 'b',
       c: false,
       d: 1,
+      e: [1, true, 3, 'd', 'b', 2, 'a'],
     })
   })
 
