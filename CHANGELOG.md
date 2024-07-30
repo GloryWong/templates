@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/GloryWong/templates/compare/v2.1.0...v2.1.1) (2024-07-30)
+
+
+### Bug Fixes
+
+* **mergeJsonFiles:** deduplicate the primitives when merge array. closes [#16](https://github.com/GloryWong/templates/issues/16) ([582e48c](https://github.com/GloryWong/templates/commit/582e48cd3cf4eda5f7d1745d936fc458ab6307f6))
+
 ## [2.1.0](https://github.com/GloryWong/templates/compare/v2.0.0...v2.1.0) (2024-07-30)
 
 
