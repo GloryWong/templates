@@ -1,0 +1,5 @@
+{
+  "extends": [
+    "github>GloryWong/renovate-config"
+  ]
+}

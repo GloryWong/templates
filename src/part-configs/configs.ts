@@ -51,8 +51,7 @@ export const configs = await definePartConfigs([
       },
       devDependencies: {
         '@antfu/eslint-config': '^2',
-        'eslint': '^8',
-        'eslint-plugin-perfectionist': '^2',
+        'eslint': '^9',
       },
     },
   },
@@ -97,5 +96,8 @@ export const configs = await definePartConfigs([
         ...gitDefault,
       }
     },
+  },
+  {
+    id: 'renovate',
   },
 ])
