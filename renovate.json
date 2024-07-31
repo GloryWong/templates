@@ -1,5 +1,5 @@
 {
   "extends": [
-    "github>GloryWong/renovate-config"
+    "github>GloryWong/renovate-config:npm"
   ]
 }
