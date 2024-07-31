@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/GloryWong/templates/compare/v2.1.1...v2.1.2) (2024-07-31)
+
+
+### Bug Fixes
+
+* **part template:** update part templates github and renovate ([31c8009](https://github.com/GloryWong/templates/commit/31c80093dbdad9760141d2490392921cf36e4175))
+
 ## [2.1.1](https://github.com/GloryWong/templates/compare/v2.1.0...v2.1.1) (2024-07-30)
 
 
