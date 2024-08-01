@@ -50,7 +50,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
     }
 
     // Install deps
-    const { count, ...deps } = extractMultiPartDeps(partIds)
+    const { count, ...deps } = await extractMultiPartDeps(partIds)
     if (count > 0) {
       if (install || await confirm({ message: 'New package dependencies are added. Install them?' })) {
         const log = logger('applyPartTemplates')

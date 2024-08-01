@@ -39,12 +39,15 @@
     "prepublishOnly": "pnpm test && pnpm build",
     "lint": "eslint .",
     "lint:fix": "pnpm lint --fix",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@gloxy/logger": "^2.2.2",
     "@inquirer/prompts": "^5.3.6",
     "@types/fs-extra": "^11.0.4",
+    "@types/semver": "^7.5.8",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "deepmerge": "^4.3.1",
@@ -52,6 +55,7 @@
     "giget": "^1.2.3",
     "ora": "^8.0.1",
     "read-pkg": "^9.0.1",
+    "semver": "^7.6.3",
     "type-fest": "^4.23.0",
     "write-package": "^7.1.0"
   },
@@ -63,6 +67,7 @@
     "@types/jest": "^29.5.12",
     "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.14.13",
+    "@vitest/coverage-istanbul": "^2.0.5",
     "copyfiles": "^2.4.1",
     "eslint": "^9.8.0",
     "eslint-plugin-perfectionist": "^3.0.0",

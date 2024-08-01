@@ -117,7 +117,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     if (skipInstall)
       return
 
-    const { count, ...deps } = extractPackageDeps(packageJsonUpdates)
+    const { count, ...deps } = await extractPackageDeps(packageJsonUpdates)
     if (count === 0)
       return
 
