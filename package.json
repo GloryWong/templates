@@ -41,7 +41,7 @@
     "lint:fix": "pnpm lint --fix",
     "test": "vitest run",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage.enabled"
   },
   "dependencies": {
     "@gloxy/logger": "^2.2.2",
