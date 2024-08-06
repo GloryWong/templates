@@ -36,8 +36,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       iso-timestamp:
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       ora:
         specifier: ^8.0.1
         version: 8.0.1
@@ -1858,8 +1858,8 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  iso-timestamp@1.0.1:
-    resolution: {integrity: sha512-MQWkPlDSBGpnsT0xyckW4GngHSSn8YKe91ksr5I4HEWQgLdlrdSH+wvGjWA06sRKHGrpSD6Sn40WJRNL7FIQ0A==}
+  iso-timestamp@1.1.0:
+    resolution: {integrity: sha512-d6mR7YApUISd0FvlA+hcIy91NSEYNH9YB+zbBUu2DhYdgavpbMGvwXYwgYg+gPbHQGtzs5OvHj1md+81b34cxg==}
     engines: {node: '>=18'}
 
   istanbul-lib-coverage@3.2.2:
@@ -4877,7 +4877,7 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  iso-timestamp@1.0.1: {}
+  iso-timestamp@1.1.0: {}
 
   istanbul-lib-coverage@3.2.2: {}
 
