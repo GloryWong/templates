@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/GloryWong/templates/compare/v2.1.2...v2.2.0) (2024-08-01)
+
+
+### Features
+
+* **applyPartTemplate:** extract valid dependencies. close [#17](https://github.com/GloryWong/templates/issues/17) ([178d1d3](https://github.com/GloryWong/templates/commit/178d1d326a5fcb9523b735b7916b44b76c8662b5))
+
 ## [2.1.2](https://github.com/GloryWong/templates/compare/v2.1.1...v2.1.2) (2024-07-31)
 
 
