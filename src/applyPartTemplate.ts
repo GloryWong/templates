@@ -8,6 +8,7 @@ import ora from 'ora'
 import { enableLogger } from '@gloxy/logger'
 import { confirm } from '@inquirer/prompts'
 import chalk from 'chalk'
+import { readPackage } from 'read-pkg'
 import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
@@ -98,6 +99,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
 
     // Update package json
     const { packageJsonUpdates } = config
+    const localPackageJson = await readPackage().catch(() => ({}))
     if (packageJsonUpdates) {
       log.info('Updating package json for partId %s', partId)
       spinner.start('Updating package.json...')
@@ -117,7 +119,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
     if (skipInstall)
       return
 
-    const { count, ...deps } = await extractPackageDeps(packageJsonUpdates)
+    const { count, ...deps } = await extractPackageDeps(packageJsonUpdates, localPackageJson)
     if (count === 0)
       return
 

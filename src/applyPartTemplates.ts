@@ -7,19 +7,20 @@ import type { PackageJson } from 'type-fest'
 import ora from 'ora'
 import { enableLogger } from '@gloxy/logger'
 import { confirm } from '@inquirer/prompts'
+import { readPackage } from 'read-pkg'
 import { type ApplyPartTemplateOptions, applyPartTemplate } from './applyPartTemplate.js'
 import { configs } from './part-configs/configs.js'
 import { logger } from './utils/logger.js'
 import { extractPackageDeps } from './utils/extractPackageDeps.js'
 import { installPackageDeps } from './utils/installPackageDeps.js'
 
-function extractMultiPartDeps(partIds: string[]) {
+function extractMultiPartDeps(partIds: string[], localPackageJson: PackageJson) {
   const packageJsonUpdates = partIds.reduce<PackageJson>((pre, partId) => {
     const packageJsonUpdates = configs.get(partId)?.packageJsonUpdates
     return packageJsonUpdates ? merge(pre, packageJsonUpdates) : pre
   }, {})
 
-  return extractPackageDeps(packageJsonUpdates)
+  return extractPackageDeps(packageJsonUpdates, localPackageJson)
 }
 
 export async function applyPartTemplates(partIds: string[], options: ApplyPartTemplateOptions = {}) {
@@ -35,6 +36,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
   }
   else {
     const { install = false, verbose = false } = options
+    const localPackageJson = await readPackage().catch(() => ({}))
 
     for (let index = 0; index < partIds.length; index++) {
       const partId = partIds[index]
@@ -51,7 +53,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
     }
 
     // Install deps
-    const { count, ...deps } = await extractMultiPartDeps(partIds)
+    const { count, ...deps } = await extractMultiPartDeps(partIds, localPackageJson)
     if (count > 0) {
       if (install || await confirm({ message: 'New package dependencies are added. Install them?' })) {
         const log = logger('applyPartTemplates')

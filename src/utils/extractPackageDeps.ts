@@ -1,4 +1,3 @@
-import { readPackage } from 'read-pkg'
 import type { PackageJson } from 'type-fest'
 import semver from 'semver'
 
@@ -32,15 +31,14 @@ function filterValidDeps(deps: Deps, localPkg: PackageJson, type: 'dependencies'
   return result
 }
 
-export async function extractPackageDeps(packageJsonUpdates: PackageJson = {}) {
+export async function extractPackageDeps(packageJsonUpdates: PackageJson = {}, localPackageJson: PackageJson) {
   let { dependencies, devDependencies, peerDependencies, optionalDependencies } = packageJsonUpdates
 
   // filter
-  const localPkg = await readPackage().catch(() => ({}))
-  dependencies = filterValidDeps(dependencies, localPkg, 'dependencies')
-  devDependencies = filterValidDeps(devDependencies, localPkg, 'devDependencies')
-  peerDependencies = filterValidDeps(peerDependencies, localPkg, 'peerDependencies')
-  optionalDependencies = filterValidDeps(optionalDependencies, localPkg, 'optionalDependencies')
+  dependencies = filterValidDeps(dependencies, localPackageJson, 'dependencies')
+  devDependencies = filterValidDeps(devDependencies, localPackageJson, 'devDependencies')
+  peerDependencies = filterValidDeps(peerDependencies, localPackageJson, 'peerDependencies')
+  optionalDependencies = filterValidDeps(optionalDependencies, localPackageJson, 'optionalDependencies')
 
   const depsCount = dependencies ? Object.keys(dependencies).length : 0
   const devDepsCount = devDependencies ? Object.keys(devDependencies).length : 0
