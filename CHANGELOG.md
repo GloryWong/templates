@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.0](https://github.com/GloryWong/templates/compare/v2.3.0...v2.4.0) (2024-08-07)
+
+
+### Features
+
+* **cli:** support interactive choices ([06a458e](https://github.com/GloryWong/templates/commit/06a458ee4481af53ce892764bab443f6de4be9cf))
+
+
+### Bug Fixes
+
+* extract new added valid deps ([c1ce678](https://github.com/GloryWong/templates/commit/c1ce67824d3d9614093fc11f2a7b2413bd5a86ef))
+
 ## [2.3.0](https://github.com/GloryWong/templates/compare/v2.2.1...v2.3.0) (2024-08-07)
 
 
