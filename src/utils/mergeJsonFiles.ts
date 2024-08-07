@@ -1,7 +1,7 @@
 import { EOL } from 'node:os'
-import merge from 'deepmerge'
 import { outputJSON, readJSON } from 'fs-extra/esm'
 import { backUpFile } from './backUpFile.js'
+import { mergeDedup } from './mergeDedup.js'
 
 interface MergeJsonFilesOptions {
   backUp?: boolean
@@ -18,11 +18,7 @@ export async function mergeJsonFiles(srcFilePath: string, destFilePath: string, 
     backUp && await backUpFile(destFilePath, backupDestDir)
     const srcContent = await readJSON(srcFilePath)
     const destContent = await readJSON(destFilePath)
-    const result = merge(destContent, srcContent, {
-      arrayMerge(target, source) { // For primitives, deduplicate
-        return [...new Set([...target, ...source])]
-      },
-    })
+    const result = mergeDedup(destContent, srcContent)
 
     await outputJSON(destFilePath, result, {
       spaces: 2,

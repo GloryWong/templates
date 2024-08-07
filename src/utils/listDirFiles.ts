@@ -1,6 +1,6 @@
-import type { PathLike } from 'node:fs'
-import { readdir } from 'node:fs/promises'
+import readdirp from 'readdirp'
 
-export async function listDirFiles(dirPath: PathLike) {
-  return readdir(dirPath, { withFileTypes: true }).then(dirents => dirents.filter(v => v.isFile()).map(v => v.name))
+export async function listDirFiles(dirPath: string) {
+  const entryInfos = await readdirp.promise(dirPath)
+  return entryInfos.map(v => v.path)
 }

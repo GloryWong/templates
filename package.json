@@ -56,6 +56,7 @@
     "iso-timestamp": "^1.1.0",
     "ora": "^8.0.1",
     "read-pkg": "^9.0.1",
+    "readdirp": "^3.6.0",
     "semver": "^7.6.3",
     "type-fest": "^4.23.0",
     "write-package": "^7.1.0"

@@ -1,7 +1,7 @@
 import mockFs from 'mock-fs'
 import { readFile, readJSON, readJson } from 'fs-extra'
-import merge from 'deepmerge'
 import { copyTemplate } from '../src/copyTemplate'
+import { mergeDedup } from '../src/utils/mergeDedup'
 
 const jsonContent = `{
   "a": "{{var1}}",
@@ -84,12 +84,27 @@ describe('copyTemplate', () => {
           'file2.txt': 'file2',
           'file3.txt': 'file3',
           'file5.json': jsonContent,
+          'dir': {
+            'file6.json': jsonContent,
+            'dir': {
+              'file7.json': jsonContent,
+            },
+          },
+          'dir1': {
+            'file8.txt': 'a file named 8',
+          },
         },
         dest: {
           'file1.json': 'invalid json file',
           'file2.txt': 'file2',
           'file4.txt': 'file4',
           'file5.json': jsonContent1,
+          'dir': {
+            'file6.json': jsonContent1,
+            'dir': {
+              'file7.json': jsonContent1,
+            },
+          },
         },
       })
     })
@@ -98,8 +113,10 @@ describe('copyTemplate', () => {
       mockFs.restore()
     })
 
-    it('should merge existing valid json files and overwrite non-json files', async () => {
+    it('should recursively merge existing valid json files and overwrite non-json files', async () => {
       const originalDestFile5 = await readJson('dest/file5.json')
+      const originalDestFile6 = await readJson('dest/dir/file6.json')
+      const originalDestFile7 = await readJson('dest/dir/dir/file7.json')
       await copyTemplate('src', 'dest', {
         variables: {
           var1: 'a',
@@ -111,7 +128,10 @@ describe('copyTemplate', () => {
       expect((await readFile('dest/file2.txt')).toString()).toEqual('file2')
       expect((await readFile('dest/file3.txt')).toString()).toEqual('file3')
       expect((await readFile('dest/file4.txt')).toString()).toEqual('file4')
-      expect(await readJSON('dest/file5.json')).toEqual(merge(originalDestFile5, await readJson('src/file5.json')))
+      expect(await readJSON('dest/file5.json')).toEqual(mergeDedup(originalDestFile5, await readJson('src/file5.json')))
+      expect(await readJSON('dest/dir/file6.json')).toEqual(mergeDedup(originalDestFile6, await readJson('src/dir/file6.json')))
+      expect(await readJSON('dest/dir/dir/file7.json')).toEqual(mergeDedup(originalDestFile7, await readJson('src/dir/dir/file7.json')))
+      expect((await readFile('dest/dir1/file8.txt')).toString()).toEqual('a file named 8')
     })
   })
 })

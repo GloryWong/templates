@@ -1,5 +1,5 @@
-import { basename, join } from 'node:path'
-import { readdir, stat } from 'node:fs/promises'
+import { join } from 'node:path'
+import { stat } from 'node:fs/promises'
 import type { CopyOptions } from 'fs-extra/esm'
 import { copy, ensureDir, ensureFile, pathExists } from 'fs-extra/esm'
 import type { TemplateVariables } from './types.js'
@@ -21,8 +21,8 @@ export interface CopyTemplateOptions extends CopyOptions {
 async function whichDestFilesExist(srcPath: string, destPath: string, pathIsFile: boolean) {
   log.info('Checking existing files in workspace')
 
-  const srcFiles = pathIsFile ? [basename(srcPath)] : await readdir(srcPath)
-  const destFiles = pathIsFile ? [basename(destPath)] : await readdir(destPath)
+  const srcFiles = pathIsFile ? [srcPath] : await listDirFiles(srcPath)
+  const destFiles = pathIsFile ? [destPath] : await listDirFiles(destPath)
 
   const existingFiles: string[] = []
   const nonexistingFiles: string[] = []
@@ -97,7 +97,7 @@ async function mergeFiles(srcPath: string, destPath: string, fileNames: string[]
 
 type ExistingFilesHandle = 'none' | 'overwrote' | 'merged' | 'overwrote-merged'
 /**
- * Note: variables are only assigned for first level files now
+ * Note: variables are only assigned to files of up to 5 nested levels (`readdirr` default config)
  */
 export async function copyTemplate(srcPath: string, destPath: string, options: CopyTemplateOptions = {}) {
   const { variables } = options
