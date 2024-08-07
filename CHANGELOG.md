@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/GloryWong/templates/compare/v2.2.0...v2.2.1) (2024-08-07)
+
+
+### Bug Fixes
+
+* **assignTemplateVariables:** keep placeholder untouched if no variable and default value provided ([ecc47c0](https://github.com/GloryWong/templates/commit/ecc47c08160d081c5a3d8690a9b5fec3ec7f594c))
+
 ## [2.2.0](https://github.com/GloryWong/templates/compare/v2.1.2...v2.2.0) (2024-08-01)
 
 
