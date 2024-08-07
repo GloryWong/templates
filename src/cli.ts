@@ -7,13 +7,13 @@ import { Argument, program } from 'commander'
 import { readPackage } from 'read-pkg'
 import { enableLogger } from '@gloxy/logger'
 import ora from 'ora'
-import { confirm } from '@inquirer/prompts'
+import { checkbox, confirm } from '@inquirer/prompts'
 import { ids } from './part-configs/index.js'
 import { logger } from './utils/logger.js'
-import { applyPartTemplates } from './applyPartTemplates.js'
 import { isDirUnderGitControl } from './utils/isDirUnderGitControl.js'
 import { isGitInstalled } from './utils/isGitInstalled.js'
 import { checkGitClean } from './utils/checkGitClean.js'
+import { applyPartTemplates } from './applyPartTemplates.js'
 
 const version = (await readPackage({ cwd: join(import.meta.dirname, '..') })).version
 
@@ -22,12 +22,13 @@ program
   .version(version)
 
 program.command('apply')
-  .description('Apply one or more part templates. Part templates are applied to current working directory.')
-  .addArgument(new Argument('<part-id...>', 'part template id.').choices(ids))
-  .option('--install', 'install package dependencies after part template is applied')
+  .alias('part')
+  .description('Apply one or more part templates. Part templates are applied to the current working directory.')
+  .addArgument(new Argument('[part-id...]', 'part template id.').choices(ids))
+  .option('--install', 'install package dependencies after part templates are applied')
   .option('-v, --verbose', 'display verbose logs')
   .showHelpAfterError(true)
-  .action(async (partIds, options, command) => {
+  .action(async (partIds: string[], options, command) => {
     if (options.verbose) {
       enableLogger('templates:*')
     }
@@ -61,7 +62,16 @@ program.command('apply')
     }
     spinner.stop()
 
-    await applyPartTemplates(partIds, options)
+    const answer = await checkbox({
+      message: 'Select part templates',
+      choices: ids.map(id => ({
+        value: id,
+        checked: partIds.includes(id),
+      })),
+      required: true,
+    })
+
+    await applyPartTemplates(answer, options)
   })
 
 program.parseAsync()

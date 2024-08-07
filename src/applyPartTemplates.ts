@@ -29,6 +29,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
     error: string
   }[] = []
 
+  console.log()
   if (partIds.length === 1) {
     await applyPartTemplate(partIds[0], options)
   }
