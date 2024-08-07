@@ -120,7 +120,7 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
       log.info('Assigning template variables... %o', variables)
       // use variable for the src file
       if (srcPathIsFile) {
-        await assignTemplateVariables(srcPath, variables)
+        await assignTemplateVariables(srcPath, variables, srcPath.endsWith('.json') ? null : undefined)
       }
       else {
         // use variables for files in src dir
@@ -128,7 +128,8 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
         for (let index = 0; index < fileNames.length; index++) {
           const fileName = fileNames[index]
           const filePath = join(srcPath, fileName)
-          await assignTemplateVariables(filePath, variables)
+
+          await assignTemplateVariables(filePath, variables, filePath.endsWith('.json') ? null : undefined)
         }
       }
       log.info('Assigned template variables')
