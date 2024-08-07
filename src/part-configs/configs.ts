@@ -60,7 +60,7 @@ export const configs = await definePartConfigs([
   },
   {
     id: 'github',
-    destDir: '.github/workflows',
+    destDir: '.github',
     suffixNote: 'Required permission: Go to your repository => Settings => Actions => Allow GitHub Actions to create and approve pull requests',
   },
   {
