@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/GloryWong/templates/compare/v2.2.1...v2.3.0) (2024-08-07)
+
+
+### Features
+
+* support nested files copying ([9b62a2a](https://github.com/GloryWong/templates/commit/9b62a2adcf0c146da5b721df05d3e7d818fd748e))
+
+
+### Bug Fixes
+
+* **part configs:** update part template github dir ([d57ff06](https://github.com/GloryWong/templates/commit/d57ff061d941198254ddb0e131c71401156d4ccb))
+
 ## [2.2.1](https://github.com/GloryWong/templates/compare/v2.2.0...v2.2.1) (2024-08-07)
 
 
