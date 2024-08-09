@@ -16,7 +16,7 @@
 
 Download and apply templates to new or existing projects. (Mainly for my own projects)
 
-> Currently existing templates is located [here][1]. Configs is located [here][2]
+> Currently existing templates is located [there][1]. Configs is located [there][2]
 
 ### Install
 
@@ -25,38 +25,45 @@ pnpm add @gloxy/templates
 ```
 ### API
 
-* `applyPartTemplate(<part-id>, [options])`
+* `applyPartTemplate(<part-id>, [src-item-id], [options])`
 
   * `part-id`: existing part templates id. Refer to [configs][2]
+
+  * `src-item-id`: global patterns to include and/or exclude files belong to the part template
 
   * options:
     * variables: assigned to the template placeholders. (Key: Value)
     * install: install package dependencies that the template depends
     * verbose: display verbose logs
 
-* `applyPartTemplates(<part-ids>, [options])`
+* `applyPartTemplates(<...part-id>, [...src-item-id], [options])`
 
-  * `part-ids`: array of existing part templates ids.
+  * `...part-ids`: array of existing part templates ids.
 
-  * options: same as the options to applyPartTemplate
+  * `...src-item-id`: array of global patterns to include and/or exclude files belong to the respectful part templates
+
+  * options: same as the options for applyPartTemplate
 
 ```typescript
 import { applyPartTemplate, applyPartTemplates } from '@gloxy/templates'
 
-applyPartTemplate('vscode', { verbose: true, install: true })
-applyPartTemplates(['vscode', 'npm', 'lintstaged'], { verbose: true, install: true })
+applyPartTemplate('github', 'release-publish', { verbose: true, install: true })
+applyPartTemplates(['vscode', 'github', 'npm'], [undefined, 'release-publish', undefined], { verbose: true, install: true })
 ```
 
 ### CLI
+
+#### Install
 
 ```bash
 $ pnpm add -g @gloxy/templates
 ```
 
-The `apply` command passes the argument (`part-id...`) and options to method `applyPartTemplates()` under the hood.
+#### Usage
 
 ```bash
-$ tmpl apply [options] <part-id...>
+## When enter RETURN, the choices for part templates will be listed. Select one or more to continue. See help for details: `tmpl part --help`
+$ tmpl part [options]
 ```
 
 ## Authors
