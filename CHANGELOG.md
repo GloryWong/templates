@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/GloryWong/templates/compare/v3.0.0...v3.0.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* **readme:** update readme ([7ee7522](https://github.com/GloryWong/templates/commit/7ee752215364c313b93e4400ace5498ca14b2133))
+
 ## [3.0.0](https://github.com/GloryWong/templates/compare/v2.4.0...v3.0.0) (2024-08-09)
 
 
