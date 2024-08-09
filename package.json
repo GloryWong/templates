@@ -1,7 +1,7 @@
 {
   "name": "@gloxy/templates",
   "type": "module",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Apply part templates",
   "author": "glorywong1001@gmail.com",
   "license": "MIT",
