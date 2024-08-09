@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/GloryWong/templates/compare/v2.4.0...v3.0.0) (2024-08-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **partConfig:** 
+
+### Features
+
+* **partConfig:** support srcItem to specify files included and/or excluded ([5079a49](https://github.com/GloryWong/templates/commit/5079a4936f06996459695809cae39f0427652c8e))
+
 ## [2.4.0](https://github.com/GloryWong/templates/compare/v2.3.0...v2.4.0) (2024-08-07)
 
 
