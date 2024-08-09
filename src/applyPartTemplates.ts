@@ -23,7 +23,7 @@ function extractMultiPartDeps(partIds: string[], localPackageJson: PackageJson) 
   return extractPackageDeps(packageJsonUpdates, localPackageJson)
 }
 
-export async function applyPartTemplates(partIds: string[], options: ApplyPartTemplateOptions = {}) {
+export async function applyPartTemplates(partIds: string[], srcItemIds?: (string | undefined)[], options: ApplyPartTemplateOptions = {}) {
   const successfulPartIds: string[] = []
   const failedParts: {
     id: string
@@ -32,7 +32,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
 
   console.log()
   if (partIds.length === 1) {
-    await applyPartTemplate(partIds[0], options)
+    await applyPartTemplate(partIds[0], srcItemIds?.[0], options)
   }
   else {
     const { install = false, verbose = false } = options
@@ -42,7 +42,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
       const partId = partIds[index]
       process.env.NODE_ENV !== 'test' && console.log(chalk.blue('[%s]'), partId)
       try {
-        await applyPartTemplate(partId, { ...options, skipInstall: true })
+        await applyPartTemplate(partId, srcItemIds?.[index], { ...options, skipInstall: true })
         successfulPartIds.push(partId)
         process.env.NODE_ENV !== 'test' && console.log(chalk.green('Apply %s successfully%s'), partId, EOL)
       }
@@ -79,7 +79,7 @@ export async function applyPartTemplates(partIds: string[], options: ApplyPartTe
       }
     }
 
-    process.env.NODE_ENV !== 'test' && console.log('Success(%d), Failed(%d)', successfulPartIds.length, failedParts.length)
+    process.env.NODE_ENV !== 'test' && console.log('Successful(%d), Failed(%d)', successfulPartIds.length, failedParts.length)
   }
 
   return failedParts

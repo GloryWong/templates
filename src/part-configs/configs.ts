@@ -61,6 +61,13 @@ export const configs = await definePartConfigs([
   {
     id: 'github',
     destDir: '.github',
+    srcItems: [{
+      id: 'release',
+      exclude: '**/release-publish.yaml',
+    }, {
+      id: 'release-publish',
+      exclude: '**/release.yaml',
+    }],
     suffixNote: 'Required permission: Go to your repository => Settings => Actions => Allow GitHub Actions to create and approve pull requests',
   },
   {

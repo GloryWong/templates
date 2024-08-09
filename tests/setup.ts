@@ -4,11 +4,14 @@ import type { PartConfigs } from '../src/part-configs/definePartConfigs'
 vi.mock('../src/part-configs/configs.js', (): { configs: PartConfigs } => {
   return ({
     configs: new Map([
-      ['partId1', {
-        id: 'partId1',
-        src: '',
-        destDir: '.',
-      }],
+      [
+        'partId1',
+        {
+          id: 'partId1',
+          src: '',
+          destDir: '.',
+        },
+      ],
       [
         'partId2',
         {
@@ -48,6 +51,22 @@ vi.mock('../src/part-configs/configs.js', (): { configs: PartConfigs } => {
           src: '',
           destDir: '.',
           suffixNote: 'suffix note test',
+        },
+      ],
+      [
+        'partId6',
+        {
+          id: 'partId6',
+          src: '',
+          destDir: '.',
+          srcItems: [{
+            id: 'src-item1',
+            include: 'dir/**',
+          }, {
+            id: 'src-item2',
+            include: 'dir/**',
+            exclude: 'dir/dir/**',
+          }],
         },
       ],
     ]),

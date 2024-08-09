@@ -51,19 +51,21 @@ async function backupFiles(fileNames: string[], path: string, pathIsFile: boolea
   log.info('Backed up files %o', fileNames)
 }
 
-async function copyFiles(srcPath: string, destPath: string, fileNames: string[], pathIsFile: boolean, backUp = false) {
-  log.info('Copying files %o from %s to %s', fileNames, srcPath, destPath)
-  backUp && await backupFiles(fileNames, destPath, pathIsFile)
+async function copyFiles(srcPath: string, destPath: string, fileNames: string[], pathIsFile: boolean, backUp = false, filter?: CopyTemplateOptions['filter']) {
+  const _fileNames = filter ? fileNames.filter(v => filter(join(srcPath, v), '')) : fileNames
+  log.info('Copying files %o from %s to %s', _fileNames, srcPath, destPath)
+  backUp && await backupFiles(_fileNames, destPath, pathIsFile)
   if (pathIsFile) {
     await copy(srcPath, destPath)
   }
   else {
-    for (let index = 0; index < fileNames.length; index++) {
-      const fileName = fileNames[index]
+    for (let index = 0; index < _fileNames.length; index++) {
+      const fileName = _fileNames[index]
       await copy(join(srcPath, fileName), join(destPath, fileName))
     }
   }
-  log.info('Copied files %o', fileNames)
+  log.info('Copied files %o', _fileNames)
+  return _fileNames
 }
 
 async function mergeFiles(srcPath: string, destPath: string, fileNames: string[], pathIsFile: boolean) {
@@ -100,7 +102,7 @@ type ExistingFilesHandle = 'none' | 'overwrote' | 'merged' | 'overwrote-merged'
  * Note: variables are only assigned to files of up to 5 nested levels (`readdirr` default config)
  */
 export async function copyTemplate(srcPath: string, destPath: string, options: CopyTemplateOptions = {}) {
-  const { variables } = options
+  const { variables, filter } = options
   try {
     if (!(await pathExists(srcPath)))
       throw new Error(`${srcPath} does not exist`)
@@ -143,8 +145,8 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
       mergedFileNames.length && log.warn('Merged %s existing JSON files %o.', mergedFileNames.length, mergedFileNames)
 
       if (nonMergedFileNames.length) {
-        await copyFiles(srcPath, destPath, nonMergedFileNames, destPathIsFile, true)
-        log.warn('Overwrote %d existing files %o', nonMergedFileNames.length, nonMergedFileNames)
+        const copiedFiles = await copyFiles(srcPath, destPath, nonMergedFileNames, destPathIsFile, true, filter)
+        copiedFiles.length && log.warn('Overwrote %d existing files %o', copiedFiles.length, copiedFiles)
       }
 
       if (mergedFileNames.length && nonMergedFileNames.length) {
@@ -159,8 +161,8 @@ export async function copyTemplate(srcPath: string, destPath: string, options: C
     }
 
     if (nonexistingFiles.length) {
-      await copyFiles(srcPath, destPath, nonexistingFiles, destPathIsFile)
-      log.info('Copied %d files %o', nonexistingFiles.length, nonexistingFiles)
+      const copiedFiles = await copyFiles(srcPath, destPath, nonexistingFiles, destPathIsFile, false, filter)
+      log.info('Copied %d files %o', copiedFiles.length, copiedFiles)
     }
 
     return existingFilesHandle

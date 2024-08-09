@@ -6,6 +6,7 @@ import { readPackage } from 'read-pkg'
 import { applyPartTemplate } from '../src/applyPartTemplate.js'
 import { getTmpPath } from '../src/utils/getTmpPath.js'
 import { TEMPLATE_DOWNLOAD_DIR } from '../src/constants.js'
+import { listDirFiles } from '../src/utils/listDirFiles.js'
 
 const mocks = vi.hoisted(() => ({
   downloadTemplate: vi.fn()
@@ -35,11 +36,29 @@ describe('applyPartTemplate', () => {
       mockFs({
         'file1.txt': 'file1',
         'file2.txt': 'file2',
+        'dir': {
+          'file1.txt': 'file1',
+          'dir': {
+            'file2.txt': 'file2',
+          },
+        },
       })
     })
 
     it('should throw error when passing partId is invalid', async () => {
-      await expect(() => applyPartTemplate('test')).rejects.toThrowError(/invalid/i)
+      await expect(() => applyPartTemplate('test foo')).rejects.toThrowError(/invalid/i)
+    })
+
+    it('should throw error when the config of passing partId does not exist', async () => {
+      await expect(() => applyPartTemplate('test')).rejects.toThrowError(/not exist/i)
+    })
+
+    it('should throw error when passing srcItemId is invalid', async () => {
+      await expect(() => applyPartTemplate('partId1', 'foo bar')).rejects.toThrowError(/invalid/i)
+    })
+
+    it('should throw error when the srcItem of passing srcItemId does not exist', async () => {
+      await expect(() => applyPartTemplate('partId1', 'foobar')).rejects.toThrowError(/not exist/i)
     })
 
     it('should throw error when fail to download', async () => {
@@ -49,11 +68,15 @@ describe('applyPartTemplate', () => {
     it('should copy from tmp to destination directory', async () => {
       mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
         await outputFile(join(dir, 'file3.txt'), '')
+        await outputFile(join(dir, 'dir/file3.txt'), '')
+        await outputFile(join(dir, 'dir/dir/file3.txt'), '')
         return ({ source: input, dir })
       })
 
       await applyPartTemplate('partId2')
-      await expect(exists('.dir/file3.txt')).resolves.toBeTruthy()
+      expect(await exists('.dir/file3.txt')).toBeTruthy()
+      expect(await exists('.dir/dir/file3.txt')).toBeTruthy()
+      expect(await exists('.dir/dir/dir/file3.txt')).toBeTruthy()
     })
 
     it('should skip downloading and coping when skipTemplate config is true', async () => {
@@ -87,6 +110,42 @@ describe('applyPartTemplate', () => {
 
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Note: suffix note test'))
       logSpy.mockRestore()
+    })
+  })
+
+  describe('use glob patterns', () => {
+    beforeEach(() => {
+      mockFs()
+      mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
+        await outputFile(join(dir, 'file1'), '')
+        await outputFile(join(dir, 'file2'), '')
+        await outputFile(join(dir, 'dir/file1'), '')
+        await outputFile(join(dir, 'dir/dir/file1'), '')
+        return ({ source: input, dir })
+      })
+    })
+
+    it('should include all files by default', async () => {
+      await applyPartTemplate('partId6')
+      expect(await exists('file1')).toBeTruthy()
+      expect(await exists('file2')).toBeTruthy()
+      expect(await exists('dir/file1')).toBeTruthy()
+      expect(await exists('dir/dir/file1')).toBeTruthy()
+    })
+
+    it('should include files matching the include patterns', async () => {
+      await applyPartTemplate('partId6', 'src-item1')
+      expect(await listDirFiles('.')).toEqual([
+        'dir/file1',
+        'dir/dir/file1',
+      ])
+    })
+
+    it('should exclude files matching the exclude patterns', async () => {
+      await applyPartTemplate('partId6', 'src-item2')
+      expect(await listDirFiles('.')).toEqual([
+        'dir/file1',
+      ])
     })
   })
 

@@ -9,6 +9,7 @@ import { enableLogger } from '@gloxy/logger'
 import { confirm } from '@inquirer/prompts'
 import chalk from 'chalk'
 import { readPackage } from 'read-pkg'
+import picomatch from 'picomatch'
 import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
@@ -38,11 +39,28 @@ export interface ApplyPartTemplateOptions extends CopyTemplateOptions {
   verbose?: boolean
 }
 
-export async function applyPartTemplate(partId: string, options: ApplyPartTemplateOptions = {}) {
+/**
+ * @param partId Part template id. Must not contains any whitespaces.
+ * @param srcItemId (optional) SrcItem id. Must not contains any whitespaces.
+ * @param options (optional)
+ */
+export async function applyPartTemplate(partId: string, srcItemId?: string, options: ApplyPartTemplateOptions = {}) {
   try {
+    if (/\s/.test(partId))
+      throw new Error(`Invalid partId ${partId}. Whitespace is not allowed`)
+
     const config = configs.get(partId)
     if (!config)
-      throw new Error(`Invalid partId`)
+      throw new Error(`Invalid partId ${partId}. Respective config does not exist`)
+
+    let srcItem: Required<(typeof config)>['srcItems'][number] | undefined
+    if (srcItemId) {
+      if (/\s/.test(srcItemId))
+        throw new Error(`Invalid srcItemId ${srcItemId}. Whitespace is not allowed`)
+      srcItem = config.srcItems?.find(v => v.id === srcItemId)
+      if (!srcItem)
+        throw new Error(`Invalid srcItemId ${srcItemId}. Respective srcItem does not exist in its config`)
+    }
 
     const { variables, install = false, skipInstall = false, verbose = false } = options
     const log = logger('applyPartTemplate')
@@ -70,6 +88,19 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
       spinner.succeed('Downloaded template')
       log.info('Downloaded template to %s', dir)
 
+      // Create filter
+      let fileFilter = (src: string) => true
+      if (srcItem) {
+        const { id, include, exclude } = srcItem
+        const includePattern = (include ? Array.isArray(include) ? include : [include] : ['**']).map(v => join(dir, v))
+        const excludePattern = exclude ? (Array.isArray(exclude) ? exclude : [exclude]).map(v => join(dir, v)) : []
+        log.debug('Created glob patterns for file filter. Include: %o. Exclude: %o', includePattern, excludePattern)
+        const isMatch = picomatch(includePattern, {
+          ignore: excludePattern,
+        })
+        fileFilter = (src: string) => isMatch(src)
+      }
+
       // Copy tmp to destination
       log.info('Copying template to %s', config.destDir)
       spinner.start('Copying template...')
@@ -78,6 +109,7 @@ export async function applyPartTemplate(partId: string, options: ApplyPartTempla
           ...config.defaultVariables,
           ...variables,
         },
+        filter: fileFilter,
       })
 
       switch (existingFilesHandle) {

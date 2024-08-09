@@ -3,12 +3,12 @@
 import { join } from 'node:path'
 import process from 'node:process'
 import { readdir } from 'node:fs/promises'
-import { Argument, program } from 'commander'
+import { program } from 'commander'
 import { readPackage } from 'read-pkg'
 import { enableLogger } from '@gloxy/logger'
 import ora from 'ora'
 import { checkbox, confirm } from '@inquirer/prompts'
-import { ids } from './part-configs/index.js'
+import { configs } from './part-configs/index.js'
 import { logger } from './utils/logger.js'
 import { isDirUnderGitControl } from './utils/isDirUnderGitControl.js'
 import { isGitInstalled } from './utils/isGitInstalled.js'
@@ -21,19 +21,17 @@ program
   .name('tmpl')
   .version(version)
 
-program.command('apply')
-  .alias('part')
-  .description('Apply one or more part templates. Part templates are applied to the current working directory.')
-  .addArgument(new Argument('[part-id...]', 'part template id.').choices(ids))
+program.command('part')
+  .description('Select one or more part templates. Part templates will be applied to the current directory.')
   .option('--install', 'install package dependencies after part templates are applied')
   .option('-v, --verbose', 'display verbose logs')
   .showHelpAfterError(true)
-  .action(async (partIds: string[], options, command) => {
+  .action(async (options, command) => {
     if (options.verbose) {
       enableLogger('templates:*')
     }
     const log = logger('CLI')
-    log.debug('Command: %s, arg: %s, options: %o', command.name(), partIds, options)
+    log.debug('Command: %s, options: %o', command.name(), options)
 
     log.info('Check if current working directory is git clean')
     const spinner = ora({
@@ -62,16 +60,45 @@ program.command('apply')
     }
     spinner.stop()
 
+    // Resemble choices
+    const choices: { name: string, value: { id: string, srcItemId?: string } }[] = []
+    for (const { id, srcItems } of configs.values()) {
+      if (srcItems) {
+        srcItems.forEach((v) => {
+          choices.push({
+            name: `${id}:${v.id}`,
+            value: {
+              id,
+              srcItemId: v.id,
+            },
+          })
+        })
+      }
+      else {
+        choices.push({
+          name: id,
+          value: {
+            id,
+          },
+        })
+      }
+    }
+
     const answer = await checkbox({
       message: 'Select part templates',
-      choices: ids.map(id => ({
-        value: id,
-        checked: partIds.includes(id),
-      })),
+      choices,
       required: true,
     })
 
-    await applyPartTemplates(answer, options)
+    // Split answer
+    const ids: string[] = []
+    const srcItemIds: (string | undefined)[] = []
+    answer.forEach(({ id, srcItemId }) => {
+      ids.push(id)
+      srcItemIds.push(srcItemId)
+    })
+
+    await applyPartTemplates(ids, srcItemIds, options)
   })
 
 program.parseAsync()

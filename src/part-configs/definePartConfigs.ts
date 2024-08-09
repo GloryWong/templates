@@ -3,11 +3,33 @@ import type { PackageJson, SetRequired } from 'type-fest'
 import type { TemplateVariables } from '../types.js'
 import { PART_TEMPLATE_LOCATION } from '../constants.js'
 
-interface DefineConfigsItem {
+interface SrcItem {
   /**
-   * Part template id, if its respective templates exists in the template repo's __parts__, it must be the folder name
+   * Src item id
    */
   id: string
+  /**
+   * Glob patterns to include files
+   */
+  include?: string | string[]
+  /**
+   * Glob patterns to exclude files
+   */
+  exclude?: string | string[]
+}
+
+interface DefineConfigsItem {
+  /**
+   * Part template id, if its respective templates exists in the template repo's **parts**, it must be the folder name
+   */
+  id: string
+  /**
+   * Source files included. All files are included by default
+   */
+  srcItems?: SrcItem[]
+  /**
+   * Description for this config
+   */
   description?: string
   /**
    * Suffix note appended after template is successfully applied
