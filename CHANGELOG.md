@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/GloryWong/templates/compare/v3.0.1...v3.1.0) (2024-08-11)
+
+
+### Features
+
+* use Squirrel and add srcDir option ([97ca8b9](https://github.com/GloryWong/templates/commit/97ca8b93557047e85e97a537ee490f83837d9674))
+
 ## [3.0.1](https://github.com/GloryWong/templates/compare/v3.0.0...v3.0.1) (2024-08-09)
 
 
