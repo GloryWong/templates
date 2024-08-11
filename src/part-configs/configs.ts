@@ -125,10 +125,12 @@ export const configs = await definePartConfigs([
   {
     id: 'test',
     packageJsonUpdates: {
-      'test': 'vitest run',
-      'test:watch': 'vitest',
-      'coverage': 'vitest run --coverage.enabled',
-      'devDependencies': {
+      scripts: {
+        'test': 'vitest run',
+        'test:watch': 'vitest',
+        'coverage': 'vitest run --coverage.enabled',
+      },
+      devDependencies: {
         '@vitest/coverage-istanbul': '^2',
         'vitest': '^2',
       },
