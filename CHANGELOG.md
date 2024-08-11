@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.2](https://github.com/GloryWong/templates/compare/v3.1.1...v3.1.2) (2024-08-11)
+
+
+### Bug Fixes
+
+* **part config:** test scripts ([81d770c](https://github.com/GloryWong/templates/commit/81d770c0212d87c1f6fdfde41f31b158afa2d540))
+
 ## [3.1.1](https://github.com/GloryWong/templates/compare/v3.1.0...v3.1.1) (2024-08-11)
 
 
