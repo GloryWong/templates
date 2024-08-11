@@ -104,7 +104,6 @@ export const configs = await definePartConfigs([
           name: basename(cwd()),
         },
         user: await getGitUser(),
-        pkg: {},
       }
     },
   },
