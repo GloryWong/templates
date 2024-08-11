@@ -1,9 +1,13 @@
-name: release-please
+name: release-pulish
 
 on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 permissions:
   contents: write

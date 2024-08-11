@@ -1,4 +1,5 @@
-name: Coverage
+name: Test and Coverage
+
 on:
   push:
     branches:
@@ -36,8 +37,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate coverage
-        run: pnpm coverage --coverage.reportOnFailure
+        run: pnpm test -- --coverage
 
       - name: Report Coverage
-        if: always()
         uses: davelosert/vitest-coverage-report-action@v2

@@ -13,6 +13,9 @@
   "repository": "github:{{it.user.name}}/{{it.project.name}}",
   "bugs": "https://github.com/{{it.user.name}}/{{it.project.name}}/issues",
   "keywords": [],
+{{-@if(it.pkg.files)}}
+  "files": [{{it.pkg.files}}],
+{{/if-}}
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }

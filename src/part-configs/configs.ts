@@ -67,7 +67,7 @@ export const configs = await definePartConfigs([
     id: 'git',
   },
   {
-    id: 'github',
+    id: 'release',
     destDir: '.github',
     srcItems: [{
       id: 'release',
@@ -104,6 +104,7 @@ export const configs = await definePartConfigs([
           name: basename(cwd()),
         },
         user: await getGitUser(),
+        pkg: {},
       }
     },
   },
@@ -120,6 +121,18 @@ export const configs = await definePartConfigs([
         },
         user: await getGitUser(),
       }
+    },
+  },
+  {
+    id: 'test',
+    packageJsonUpdates: {
+      'test': 'vitest run',
+      'test:watch': 'vitest',
+      'coverage': 'vitest run --coverage.enabled',
+      'devDependencies': {
+        '@vitest/coverage-istanbul': '^2',
+        'vitest': '^2',
+      },
     },
   },
 ])
