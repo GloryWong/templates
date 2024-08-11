@@ -56,9 +56,15 @@ importers:
       semver:
         specifier: ^7.6.3
         version: 7.6.3
+      squirrelly:
+        specifier: ^9.1.0
+        version: 9.1.0
       type-fest:
         specifier: ^4.24.0
         version: 4.24.0
+      untildify:
+        specifier: ^5.0.0
+        version: 5.0.0
       write-package:
         specifier: ^7.1.0
         version: 7.1.0
@@ -2712,6 +2718,10 @@ packages:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
     engines: {node: '>= 10.x'}
 
+  squirrelly@9.1.0:
+    resolution: {integrity: sha512-kvjFqb7qzC4gX4lkqSaU8QPvUHhDLMiDpxpz7a66vjTH0JtjLJqAXbPrc7ST61EefuuuW05sne2rjGskunrF2A==}
+    engines: {node: '>=6.0.0'}
+
   stable-hash@0.0.4:
     resolution: {integrity: sha512-LjdcbuBeLcdETCrPn9i8AYAZ1eCtu4ECAWtP7UleOiZ9LzVxRzzUZEoZ8zB24nhkQnDWyET0I+3sWokSDS3E7g==}
 
@@ -2921,6 +2931,10 @@ packages:
   untildify@4.0.0:
     resolution: {integrity: sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==}
     engines: {node: '>=8'}
+
+  untildify@5.0.0:
+    resolution: {integrity: sha512-bOgQLUnd2G5rhzaTvh1VCI9Fo6bC5cLTpH17T5aFfamyXFYDbbdzN6IXdeoc3jBS7T9hNTmJtYUzJCJ2Xlc9gA==}
+    engines: {node: '>=16'}
 
   update-browserslist-db@1.1.0:
     resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==}
@@ -5862,6 +5876,8 @@ snapshots:
 
   split2@4.2.0: {}
 
+  squirrelly@9.1.0: {}
+
   stable-hash@0.0.4: {}
 
   stack-utils@2.0.6:
@@ -6033,6 +6049,8 @@ snapshots:
   universalify@2.0.1: {}
 
   untildify@4.0.0: {}
+
+  untildify@5.0.0: {}
 
   update-browserslist-db@1.1.0(browserslist@4.23.3):
     dependencies:

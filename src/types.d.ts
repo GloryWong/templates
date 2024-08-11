@@ -1,1 +1,3 @@
-export type TemplateVariables = Record<string, string | number | boolean>
+import type { JsonObject } from 'type-fest'
+
+export type TemplateVariables = JsonObject

@@ -24,4 +24,6 @@ export default await antfu({
       }],
     },
   },
+}, {
+  ignores: ['parts/**/*'],
 })

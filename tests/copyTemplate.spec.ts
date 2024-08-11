@@ -4,15 +4,15 @@ import { copyTemplate } from '../src/copyTemplate'
 import { mergeDedup } from '../src/utils/mergeDedup'
 
 const jsonContent = `{
-  "a": "{{var1}}",
-  "b": {{var2}},
-  "c": "{{var1}}",
+  "a": "{{it.var1}}",
+  "b": {{it.var2}},
+  "c": "{{it.var1}}",
   "d": {
-    "e": {{var2}}
+    "e": {{it.var2}}
   },
   "f": {
     "g": {
-      "h": {{var3}}
+      "h": {{it.var3}}
     },
     "k": ["k1", {
       "k2": 1
@@ -67,6 +67,7 @@ describe('copyTemplate', () => {
       await copyTemplate('src', 'dest', { variables: {
         var1: 'a',
         var2: true,
+        var3: 1,
       } })
 
       expect((await readJSON('dest/file1.json'))).toEqual(await readJSON('src/file1.json'))

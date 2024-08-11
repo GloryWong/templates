@@ -10,6 +10,8 @@ import { confirm } from '@inquirer/prompts'
 import chalk from 'chalk'
 import { readPackage } from 'read-pkg'
 import picomatch from 'picomatch'
+import { copy } from 'fs-extra'
+import untildify from 'untildify'
 import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
 import type { CopyTemplateOptions } from './copyTemplate.js'
@@ -37,6 +39,16 @@ export interface ApplyPartTemplateOptions extends CopyTemplateOptions {
    * @default false
    */
   verbose?: boolean
+  /**
+   * Source directory URI. Must either be:
+   *
+   * - A path to local directory: `local:<directory path>`
+   * - A valid `source`
+   * of https://github.com/unjs/giget?tab=readme-ov-file#downloadtemplatesource-options.
+   *
+   * If omitted, built-in `parts` in this github repository is used
+   */
+  srcDir?: string
 }
 
 /**
@@ -62,7 +74,7 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
         throw new Error(`Invalid srcItemId ${srcItemId}. Respective srcItem does not exist in its config`)
     }
 
-    const { variables, install = false, skipInstall = false, verbose = false } = options
+    const { variables, install = false, skipInstall = false, verbose = false, srcDir } = options
     const log = logger('applyPartTemplate')
     if (verbose) {
       enableLogger('templates:*')
@@ -71,29 +83,48 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
       isSilent: process.env.NODE_ENV === 'test' || verbose,
     })
 
+    log.info('Clear downloaded template for partId %s', partId)
+    await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
+
     config.skipTemplate && log.info('Skip template download and copy. %s', partId)
     if (!config.skipTemplate) {
       // Download parts to tmp
-      log.info('Downloading template from %s', config.src)
       spinner.start('Downloading template...')
       const tmp = await getTmpPath(TEMPLATE_DOWNLOAD_DIR)
-      const { source, dir } = await downloadTemplate(config.src, {
-        dir: join(tmp, partId),
-      })
-      if (!(await readdir(dir)).length) {
-        spinner.fail('Failed to download template')
-        throw new Error(`Failed to download template from ${source}`)
+      let downloadedDistDir = join(tmp, partId)
+      if (srcDir && srcDir.startsWith('local:')) {
+        const src = `${srcDir.split(':')[1]}/${partId}`
+        log.info('Downloading local template from %s', src)
+        try {
+          await copy(untildify(src), downloadedDistDir)
+        }
+        catch (error) {
+          spinner.fail('Failed to download local template')
+          throw new Error(`Failed to download local template from ${srcDir}. ${error}`)
+        }
+      }
+      else {
+        const src = srcDir ? `${srcDir}/${partId}#master` : config.src
+        log.info('Downloading template from %s', src)
+        const { source, dir } = await downloadTemplate(src, {
+          dir: downloadedDistDir,
+        })
+        downloadedDistDir = dir
+        if (!(await readdir(dir)).length) {
+          spinner.fail('Failed to download remote template')
+          throw new Error(`Failed to download template from ${source}`)
+        }
       }
 
       spinner.succeed('Downloaded template')
-      log.info('Downloaded template to %s', dir)
+      log.info('Downloaded template to %s', downloadedDistDir)
 
       // Create filter
-      let fileFilter = (src: string) => true
+      let fileFilter = (_: string) => true
       if (srcItem) {
-        const { id, include, exclude } = srcItem
-        const includePattern = (include ? Array.isArray(include) ? include : [include] : ['**']).map(v => join(dir, v))
-        const excludePattern = exclude ? (Array.isArray(exclude) ? exclude : [exclude]).map(v => join(dir, v)) : []
+        const { include, exclude } = srcItem
+        const includePattern = (include ? Array.isArray(include) ? include : [include] : ['**']).map(v => join(downloadedDistDir, v))
+        const excludePattern = exclude ? (Array.isArray(exclude) ? exclude : [exclude]).map(v => join(downloadedDistDir, v)) : []
         log.debug('Created glob patterns for file filter. Include: %o. Exclude: %o', includePattern, excludePattern)
         const isMatch = picomatch(includePattern, {
           ignore: excludePattern,
@@ -104,10 +135,11 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
       // Copy tmp to destination
       log.info('Copying template to %s', config.destDir)
       spinner.start('Copying template...')
-      const existingFilesHandle = await copyTemplate(dir, config.destDir, {
+      const existingFilesHandle = await copyTemplate(downloadedDistDir, config.destDir, {
         variables: {
           ...config.defaultVariables,
           ...variables,
+          ...srcItem?.variables,
         },
         filter: fileFilter,
       })
@@ -147,7 +179,6 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
     await deleteTmp(TEMPLATE_DOWNLOAD_DIR)
 
     // Install dependencies
-
     if (skipInstall)
       return
 

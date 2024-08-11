@@ -16,6 +16,12 @@ interface SrcItem {
    * Glob patterns to exclude files
    */
   exclude?: string | string[]
+  /**
+   * Variables assigned to templates
+   *
+   * **Overides global variables: user passed variables and default variables**
+   */
+  variables?: TemplateVariables
 }
 
 interface DefineConfigsItem {
@@ -24,17 +30,13 @@ interface DefineConfigsItem {
    */
   id: string
   /**
-   * Source files included. All files are included by default
-   */
-  srcItems?: SrcItem[]
-  /**
    * Description for this config
    */
   description?: string
   /**
-   * Suffix note appended after template is successfully applied
+   * Source files included. All files are included by default
    */
-  suffixNote?: string
+  srcItems?: SrcItem[]
   /**
    * The destination directory to which the part template will be copied.
    * Relative to process.cwd()
@@ -54,6 +56,10 @@ interface DefineConfigsItem {
    * The default variable values of templates
    */
   defaultVariables?: TemplateVariables | (() => TemplateVariables | Promise<TemplateVariables>)
+  /**
+   * Suffix note appended after template is successfully applied
+   */
+  suffixNote?: string
 }
 
 type DefineConfigs = DefineConfigsItem[]

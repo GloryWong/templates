@@ -25,6 +25,7 @@ program.command('part')
   .description('Select one or more part templates. Part templates will be applied to the current directory.')
   .option('--install', 'install package dependencies after part templates are applied')
   .option('-v, --verbose', 'display verbose logs')
+  .option('--src-dir [String]', 'Source directory URI')
   .showHelpAfterError(true)
   .action(async (options, command) => {
     if (options.verbose) {

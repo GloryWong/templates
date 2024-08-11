@@ -3,6 +3,14 @@ import { cwd } from 'node:process'
 import { getGitConfigs } from '../utils/getGitConfig.js'
 import { definePartConfigs } from './definePartConfigs.js'
 
+function getGitUser() {
+  return getGitConfigs({
+    name: 'user.name',
+    email: 'user.email',
+    url: 'user.url',
+  })
+}
+
 export const configs = await definePartConfigs([
   {
     id: 'commitlint',
@@ -63,10 +71,11 @@ export const configs = await definePartConfigs([
     destDir: '.github',
     srcItems: [{
       id: 'release',
-      exclude: '**/release-publish.yaml',
     }, {
       id: 'release-publish',
-      exclude: '**/release.yaml',
+      variables: {
+        shouldPublishNpm: true,
+      },
     }],
     suffixNote: 'Required permission: Go to your repository => Settings => Actions => Allow GitHub Actions to create and approve pull requests',
   },
@@ -90,23 +99,27 @@ export const configs = await definePartConfigs([
   {
     id: 'npm',
     defaultVariables: async () => {
-      const gitDefault = await getGitConfigs({
-        userName: 'user.name',
-        email: 'user.email',
-        url: 'user.url',
-      })
-
-      const dirName = basename(cwd())
-
       return {
-        url: '',
-        projectName: dirName,
-        ...gitDefault,
+        project: {
+          name: basename(cwd()),
+        },
+        user: await getGitUser(),
       }
     },
   },
   {
     id: 'renovate',
     suffixNote: 'Go to https://github.com/apps/renovate and Install (or Configure if already installed) Renovate, then add your repository to the Repository access',
+  },
+  {
+    id: 'readme',
+    defaultVariables: async () => {
+      return {
+        project: {
+          name: basename(cwd()),
+        },
+        user: await getGitUser(),
+      }
+    },
   },
 ])
