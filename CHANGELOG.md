@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/GloryWong/templates/compare/v3.1.0...v3.1.1) (2024-08-11)
+
+
+### Bug Fixes
+
+* npm variables ([d73f36c](https://github.com/GloryWong/templates/commit/d73f36c26bb39482cea1e6e80065b0021f2335a5))
+
 ## [3.1.0](https://github.com/GloryWong/templates/compare/v3.0.1...v3.1.0) (2024-08-11)
 
 
