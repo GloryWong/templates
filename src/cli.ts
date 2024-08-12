@@ -8,11 +8,11 @@ import { readPackage } from 'read-pkg'
 import { enableLogger } from '@gloxy/logger'
 import ora from 'ora'
 import { checkbox, confirm } from '@inquirer/prompts'
+import { checkGitClean } from 'check-git-clean'
 import { configs } from './part-configs/index.js'
 import { logger } from './utils/logger.js'
 import { isDirUnderGitControl } from './utils/isDirUnderGitControl.js'
 import { isGitInstalled } from './utils/isGitInstalled.js'
-import { checkGitClean } from './utils/checkGitClean.js'
 import { applyPartTemplates } from './applyPartTemplates.js'
 
 const version = (await readPackage({ cwd: join(import.meta.dirname, '..') })).version
