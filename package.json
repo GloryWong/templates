@@ -62,7 +62,7 @@
     "readdirp": "^3.6.0",
     "semver": "^7.6.3",
     "squirrelly": "^9.1.0",
-    "type-fest": "^4.24.0",
+    "type-fest": "^4.25.0",
     "untildify": "^5.0.0",
     "write-package": "^7.1.0"
   },
