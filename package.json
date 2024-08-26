@@ -67,7 +67,7 @@
     "write-package": "^7.1.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.26.0",
+    "@antfu/eslint-config": "^2.27.1",
     "@commitlint/cli": "^19.4.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@tsconfig/node20": "^20.1.4",
@@ -76,7 +76,7 @@
     "@types/node": "^20.16.1",
     "@vitest/coverage-istanbul": "^2.0.5",
     "copyfiles": "^2.4.1",
-    "eslint": "^9.9.0",
+    "eslint": "^9.9.1",
     "lint-staged": "^15.2.9",
     "mock-fs": "^5.2.0",
     "rimraf": "^6.0.1",
