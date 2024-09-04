@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { join } from 'node:path'
-import { readdir } from 'node:fs/promises'
-import process from 'node:process'
+import { readdir, stat } from 'node:fs/promises'
+import process, { cwd } from 'node:process'
 import { downloadTemplate } from 'giget'
 import { updatePackage } from 'write-package'
 import ora from 'ora'
@@ -10,7 +10,7 @@ import { confirm } from '@inquirer/prompts'
 import chalk from 'chalk'
 import { readPackage } from 'read-pkg'
 import picomatch from 'picomatch'
-import { copy } from 'fs-extra'
+import { copy, exists } from 'fs-extra'
 import untildify from 'untildify'
 import { getTmpPath } from './utils/getTmpPath.js'
 import { deleteTmp } from './utils/deleteTmp.js'
@@ -49,6 +49,11 @@ export interface ApplyPartTemplateOptions extends CopyTemplateOptions {
    * If omitted, built-in `parts` in this github repository is used
    */
   srcDir?: string
+  /**
+   * Root directory to which the `destDir`s of part templates is relative
+   * @default process.cwd()
+   */
+  rootDir?: string
 }
 
 /**
@@ -74,7 +79,12 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
         throw new Error(`Invalid srcItemId ${srcItemId}. Respective srcItem does not exist in its config`)
     }
 
-    const { variables, install = false, skipInstall = false, verbose = false, srcDir } = options
+    const { variables, install = false, skipInstall = false, verbose = false, srcDir, rootDir = cwd() } = options
+    if (!(await exists(rootDir)))
+      throw new Error(`rootDir ${rootDir} does not exist`)
+    if (!((await stat(rootDir)).isDirectory()))
+      throw new Error(`rooDir ${rootDir} is not a directory`)
+
     const log = logger('applyPartTemplate')
     if (verbose) {
       enableLogger('templates:*')
@@ -135,7 +145,7 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
       // Copy tmp to destination
       log.info('Copying template to %s', config.destDir)
       spinner.start('Copying template...')
-      const existingFilesHandle = await copyTemplate(downloadedDistDir, config.destDir, {
+      const existingFilesHandle = await copyTemplate(downloadedDistDir, join(rootDir, config.destDir), {
         variables: {
           ...config.defaultVariables,
           ...variables,

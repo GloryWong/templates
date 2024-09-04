@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 
-import { join } from 'node:path'
+import path, { join } from 'node:path'
 import process from 'node:process'
-import { readdir } from 'node:fs/promises'
-import { program } from 'commander'
+import { readdir, stat } from 'node:fs/promises'
+import { homedir } from 'node:os'
+import { Option, program } from 'commander'
 import { readPackage } from 'read-pkg'
 import { enableLogger } from '@gloxy/logger'
 import ora from 'ora'
-import { checkbox, confirm } from '@inquirer/prompts'
+import { checkbox, confirm, select } from '@inquirer/prompts'
 import { checkGitClean } from 'check-git-clean'
+import { pathExists } from 'fs-extra'
 import { configs } from './part-configs/index.js'
 import { logger } from './utils/logger.js'
 import { isDirUnderGitControl } from './utils/isDirUnderGitControl.js'
 import { isGitInstalled } from './utils/isGitInstalled.js'
 import { applyPartTemplates } from './applyPartTemplates.js'
+import { isDirEmpty } from './utils/isDirEmpty.js'
+import { projectTypes } from './project-configs/project-types.js'
+import { createProject } from './createProject.js'
 
 const version = (await readPackage({ cwd: join(import.meta.dirname, '..') })).version
 
@@ -100,6 +105,56 @@ program.command('part')
     })
 
     await applyPartTemplates(ids, srcItemIds, options)
+  })
+
+program.command('project')
+  .description('Create a project with boilterplates')
+  .argument('[path]', 'The path where project files will be created. Relative to `root`.', '.')
+  .addOption(new Option('--root [root]', 'The root directory where the project directory will be created.').default(`${homedir()}/Projects`))
+  .option('--install', 'Install package dependencies after project files are created')
+  .option('-v, --verbose', 'Display verbose logs')
+  .option('--src-dir [String]', 'Source directory URI')
+  .showHelpAfterError(true)
+  .action(async (_path, options, command) => {
+    if (options.verbose) {
+      enableLogger('templates:*')
+    }
+    const log = logger('CLI')
+    log.debug('Command: %s, path: %o, options: %o', command.name(), _path, options)
+
+    const spinner = ora({
+      isSilent: process.env.NODE_ENV === 'test' || options.verbose,
+    })
+
+    const { root = `${homedir()}/Projects` } = options
+
+    spinner.start('Checking directory...')
+    const dirPath = path.resolve(root, _path)
+    if (await pathExists(dirPath)) {
+      if ((await stat(dirPath)).isFile()) {
+        logger.error('%s is not a directory', dirPath)
+        spinner.fail(`${dirPath} is not a directory`)
+        return
+      }
+
+      if (await isDirEmpty(dirPath)) {
+        logger.warn('%s is not empty', dirPath)
+        spinner.warn(`${dirPath} is not empty`)
+        return
+      }
+    }
+
+    const choices = projectTypes.map(v => ({
+      value: v,
+    }))
+
+    const answer = await select({
+      message: 'Select project types',
+      choices,
+      default: 'empty',
+    })
+
+    await createProject(dirPath, { type: answer })
   })
 
 program.parseAsync()

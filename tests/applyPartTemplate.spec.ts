@@ -25,7 +25,7 @@ vi.mock('../src/part-configs/configs.js', (): { configs: PartConfigs } => {
         {
           id: 'partId2',
           src: '',
-          destDir: '.dir',
+          destDir: './dir',
         },
       ],
       [
@@ -157,6 +157,20 @@ describe('applyPartTemplate', () => {
       expect((await readdir('.')).includes('fooFile')).toBeTruthy()
     })
 
+    it('should throw error when rootDir does not exist', async () => {
+      mockFs.restore()
+      mockFs({})
+      await expect(() => applyPartTemplate('partId2', undefined, { rootDir: 'non-exist-dir' })).rejects.toThrowError(/not exist/)
+    })
+
+    it('should throw error when rootDir is not a directory', async () => {
+      mockFs.restore()
+      mockFs({
+        rootDir: 'file',
+      })
+      await expect(() => applyPartTemplate('partId2', undefined, { rootDir: 'rootDir' })).rejects.toThrowError(/not a directory/)
+    })
+
     it('should copy from tmp to destination directory', async () => {
       mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
         await outputFile(join(dir, 'file3.txt'), '')
@@ -166,9 +180,27 @@ describe('applyPartTemplate', () => {
       })
 
       await applyPartTemplate('partId2')
-      expect(await exists('.dir/file3.txt')).toBeTruthy()
-      expect(await exists('.dir/dir/file3.txt')).toBeTruthy()
-      expect(await exists('.dir/dir/dir/file3.txt')).toBeTruthy()
+      expect(await exists('dir/file3.txt')).toBeTruthy()
+      expect(await exists('dir/dir/file3.txt')).toBeTruthy()
+      expect(await exists('dir/dir/dir/file3.txt')).toBeTruthy()
+    })
+
+    it('should copy from tmp to destination directory relative to rootDir', async () => {
+      mockFs.restore()
+      mockFs({
+        rootDir: {},
+      })
+      mocks.downloadTemplate.mockImplementationOnce(async (input: string, { dir }: { dir: string }) => {
+        await outputFile(join(dir, 'file3.txt'), '')
+        await outputFile(join(dir, 'dir/file3.txt'), '')
+        await outputFile(join(dir, 'dir/dir/file3.txt'), '')
+        return ({ source: input, dir })
+      })
+
+      await applyPartTemplate('partId2', undefined, { rootDir: 'rootDir' })
+      expect(await exists('rootDir/dir/file3.txt')).toBeTruthy()
+      expect(await exists('rootDir/dir/dir/file3.txt')).toBeTruthy()
+      expect(await exists('rootDir/dir/dir/dir/file3.txt')).toBeTruthy()
     })
 
     it('should skip downloading and coping when skipTemplate config is true', async () => {

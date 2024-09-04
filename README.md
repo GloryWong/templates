@@ -35,6 +35,7 @@ pnpm add @gloxy/templates
     * variables: assigned to the template placeholders. (Key: Value)
     * install: install package dependencies that the template depends
     * verbose: display verbose logs
+    * rootDir: Root directory to which the `destDir`s of part templates is relative. Default: `process.cwd()`
 
 * `applyPartTemplates(<...part-id>, [...src-item-id], [options])`
 
