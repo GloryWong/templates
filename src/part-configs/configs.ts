@@ -1,5 +1,4 @@
 import { basename } from 'node:path'
-import { cwd } from 'node:process'
 import { getGitConfigs } from '../utils/getGitConfig.js'
 import { definePartConfigs } from './definePartConfigs.js'
 
@@ -83,11 +82,11 @@ export const configs = await definePartConfigs([
     id: 'typescript',
     packageJsonUpdates: {
       engines: {
-        node: '>=20',
+        node: '>=18',
       },
       devDependencies: {
         'typescript': '^5',
-        '@tsconfig/node20': '^20',
+        '@tsconfig/node18': '^18',
         'type-fest': '^4',
       },
     },
@@ -98,10 +97,10 @@ export const configs = await definePartConfigs([
   },
   {
     id: 'npm',
-    defaultVariables: async () => {
+    defaultVariables: async ({ rootDir }) => {
       return {
         project: {
-          name: basename(cwd()),
+          name: basename(rootDir),
         },
         user: await getGitUser(),
       }
@@ -113,10 +112,10 @@ export const configs = await definePartConfigs([
   },
   {
     id: 'readme',
-    defaultVariables: async () => {
+    defaultVariables: async ({ rootDir }) => {
       return {
         project: {
-          name: basename(cwd()),
+          name: basename(rootDir),
         },
         user: await getGitUser(),
       }
@@ -135,5 +134,8 @@ export const configs = await definePartConfigs([
         'vitest': '^2',
       },
     },
+  },
+  {
+    id: 'demo',
   },
 ])

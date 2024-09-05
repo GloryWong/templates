@@ -12,17 +12,17 @@ function createPkgNameVersions(...deps: Deps[]) {
   return Object.keys(depses).map(name => `${name}@${depses[name]}`)
 }
 
-function _updateDeps(nameVersions: string[]) {
+function _updateDeps(nameVersions: string[], cwd?: string) {
   const cmd = `pnpm update ${nameVersions.join(' ')}`
   log.info('Executing command:', cmd)
-  return exec(cmd)
+  return exec(cmd, { cwd })
 }
 
-export async function installPackageDeps(...deps: Deps[]) {
+export async function installPackageDeps(deps: Deps[], cwd?: string) {
   try {
     const nameVersions = createPkgNameVersions(...deps)
     log.info('Installing package dependencies %s...', nameVersions.join(', '))
-    await _updateDeps(nameVersions)
+    await _updateDeps(nameVersions, cwd)
     log.info('Installed package dependencies')
   }
   catch (error) {

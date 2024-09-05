@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { readdir, stat } from 'node:fs/promises'
 import process, { cwd } from 'node:process'
 import { downloadTemplate } from 'giget'
@@ -84,6 +84,7 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
       throw new Error(`rootDir ${rootDir} does not exist`)
     if (!((await stat(rootDir)).isDirectory()))
       throw new Error(`rooDir ${rootDir} is not a directory`)
+    const destDir = resolve(rootDir, config.destDir)
 
     const log = logger('applyPartTemplate')
     if (verbose) {
@@ -143,11 +144,14 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
       }
 
       // Copy tmp to destination
-      log.info('Copying template to %s', config.destDir)
+      log.info('Copying template to %s', destDir)
       spinner.start('Copying template...')
-      const existingFilesHandle = await copyTemplate(downloadedDistDir, join(rootDir, config.destDir), {
+      const defaultVariables = typeof config.defaultVariables === 'function'
+        ? await config.defaultVariables({ rootDir })
+        : config.defaultVariables
+      const existingFilesHandle = await copyTemplate(downloadedDistDir, destDir, {
         variables: {
-          ...config.defaultVariables,
+          ...defaultVariables,
           ...variables,
           ...srcItem?.variables,
         },
@@ -173,11 +177,11 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
 
     // Update package json
     const { packageJsonUpdates } = config
-    const localPackageJson = await readPackage().catch(() => ({}))
+    const localPackageJson = await readPackage({ cwd: rootDir }).catch(() => ({}))
     if (packageJsonUpdates) {
       log.info('Updating package json for partId %s', partId)
       spinner.start('Updating package.json...')
-      await updatePackage(packageJsonUpdates)
+      await updatePackage(rootDir, packageJsonUpdates)
       spinner.succeed('Updated package.json')
       log.info('Updated package json for partId %s', partId)
     }
@@ -200,7 +204,7 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
       try {
         log.info('Installing dependencies for partId %s', partId)
         spinner.start('Installing dependencies...')
-        await installPackageDeps(...Object.values(deps))
+        await installPackageDeps(Object.values(deps), rootDir)
         spinner.succeed('Installed dependencies')
         log.info('Installed dependencies for partId %s', partId)
       }

@@ -1,4 +1,3 @@
-import process from 'node:process'
 import type { PackageJson, SetRequired } from 'type-fest'
 import type { TemplateVariables } from '../types.js'
 import { PART_TEMPLATE_LOCATION } from '../constants.js'
@@ -39,8 +38,8 @@ interface DefineConfigsItem {
   srcItems?: SrcItem[]
   /**
    * The destination directory to which the part template will be copied.
-   * Relative to process.cwd()
-   * @default process.cwd()
+   * Relative to the `rootDir`
+   * @default '.'
    */
   destDir?: string
   /**
@@ -55,7 +54,7 @@ interface DefineConfigsItem {
   /**
    * The default variable values of templates
    */
-  defaultVariables?: TemplateVariables | (() => TemplateVariables | Promise<TemplateVariables>)
+  defaultVariables?: TemplateVariables | ((options: { rootDir: string }) => TemplateVariables | Promise<TemplateVariables>)
   /**
    * Suffix note appended after template is successfully applied
    */
@@ -66,7 +65,6 @@ type DefineConfigs = DefineConfigsItem[]
 
 export interface PartConfig extends SetRequired<DefineConfigsItem, 'destDir'> {
   src: string
-  defaultVariables?: TemplateVariables
 }
 export type PartConfigs = Map<string, PartConfig>
 
@@ -74,12 +72,12 @@ export async function definePartConfigs(configs: DefineConfigs) {
   const result: PartConfigs = new Map()
   for (let index = 0; index < configs.length; index++) {
     const config = configs[index]
-    const item: Record<string, any> = { id: '', src: '', destDir: process.cwd() }
+    const item: Record<string, any> = { id: '', src: '', destDir: '.' }
     const keys = Object.keys(config) as (keyof DefineConfigsItem)[]
     for (let index = 0; index < keys.length; index++) {
       const key = keys[index]
       const value = config[key]
-      item[key] = typeof value === 'function' ? await value() : value
+      item[key] = value
     }
     item.src = `${PART_TEMPLATE_LOCATION}/${item.id}#master`
     result.set(item.id, item as PartConfig)

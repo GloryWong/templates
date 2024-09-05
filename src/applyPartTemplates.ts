@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { EOL } from 'node:os'
-import process from 'node:process'
+import process, { cwd } from 'node:process'
 import chalk from 'chalk'
 import merge from 'deepmerge'
 import type { PackageJson } from 'type-fest'
@@ -35,8 +35,8 @@ export async function applyPartTemplates(partIds: string[], srcItemIds?: (string
     await applyPartTemplate(partIds[0], srcItemIds?.[0], options)
   }
   else {
-    const { install = false, verbose = false } = options
-    const localPackageJson = await readPackage().catch(() => ({}))
+    const { install = false, verbose = false, rootDir = cwd() } = options
+    const localPackageJson = await readPackage({ cwd: rootDir }).catch(() => ({}))
 
     for (let index = 0; index < partIds.length; index++) {
       const partId = partIds[index]
@@ -67,7 +67,7 @@ export async function applyPartTemplates(partIds: string[], srcItemIds?: (string
         spinner.start('Installing dependencies...')
         log.info('Installing dependencies...')
         try {
-          await installPackageDeps(...Object.values(deps))
+          await installPackageDeps(Object.values(deps), rootDir)
           spinner.succeed('Installed dependencies')
           log.info('Installed dependencies')
         }

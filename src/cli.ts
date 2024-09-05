@@ -19,6 +19,7 @@ import { applyPartTemplates } from './applyPartTemplates.js'
 import { isDirEmpty } from './utils/isDirEmpty.js'
 import { projectTypes } from './project-configs/project-types.js'
 import { createProject } from './createProject.js'
+import { exec } from './utils/exec.js'
 
 const version = (await readPackage({ cwd: join(import.meta.dirname, '..') })).version
 
@@ -108,8 +109,8 @@ program.command('part')
   })
 
 program.command('project')
-  .description('Create a project with boilterplates')
-  .argument('[path]', 'The path where project files will be created. Relative to `root`.', '.')
+  .description('Create a project with boilerplates')
+  .argument('<path>', 'The directory path where project files will be created (Relative to the `root`). Note: the basename of the path will be used as the project name.')
   .addOption(new Option('--root [root]', 'The root directory where the project directory will be created.').default(`${homedir()}/Projects`))
   .option('--install', 'Install package dependencies after project files are created')
   .option('-v, --verbose', 'Display verbose logs')
@@ -137,12 +138,13 @@ program.command('project')
         return
       }
 
-      if (await isDirEmpty(dirPath)) {
+      if (!(await isDirEmpty(dirPath))) {
         logger.warn('%s is not empty', dirPath)
         spinner.warn(`${dirPath} is not empty`)
         return
       }
     }
+    spinner.stop()
 
     const choices = projectTypes.map(v => ({
       value: v,
@@ -154,7 +156,55 @@ program.command('project')
       default: 'empty',
     })
 
-    await createProject(dirPath, { type: answer })
+    await createProject(dirPath, { type: answer, ...options })
+
+    // Initialize git repository
+    const initGit = await confirm({
+      message: 'Do you want to initialize git repository for this project?',
+      default: true,
+    })
+
+    if (initGit) {
+      spinner.start('Initializing git repository...')
+      if (!(await isGitInstalled())) {
+        log.warn('Failed to initialize git repository: Git is not installed')
+        spinner.warn('Failed to initialize git repository: Git is not installed')
+      }
+      else {
+        try {
+          await exec('git init', { cwd: dirPath })
+          spinner.succeed('Initialized git repository!')
+        }
+        catch (error) {
+          log.error('Failed to initialize git repository: %o', error)
+          spinner.fail(`Failed to initialize git repository: ${String(error)}`)
+        }
+      }
+    }
+
+    // Open project using VSCode
+    const openProject = await confirm({
+      message: 'Do you want to open this project in a new window of VSCode?',
+      default: true,
+    })
+
+    if (openProject) {
+      spinner.start('Opening project in VSCode...')
+      if (!(await exec('code --version').then(() => true).catch(() => false))) {
+        log.warn('Failed to open project: VSCode CLI is not installed')
+        spinner.warn('Failed to open project: VSCode CLI is not installed')
+      }
+      else {
+        try {
+          await exec('code . -n', { cwd: dirPath })
+          spinner.succeed('Opened project in a new window of VSCode')
+        }
+        catch (error) {
+          log.error('Failed to open project: %o', error)
+          spinner.fail(`Failed to open project: ${String(error)}`)
+        }
+      }
+    }
   })
 
 program.parseAsync()

@@ -1,5 +1,6 @@
 import { readFile, readdir } from 'node:fs/promises'
 import { join } from 'node:path'
+import { cwd } from 'node:process'
 import { assert } from 'vitest'
 import * as Sqrl from 'squirrelly'
 import { configs } from '../src/part-configs'
@@ -21,7 +22,7 @@ describe('parts-template-check', async () => {
         const files = await listDirFiles(dirPath)
         for (const file of files) {
           const template = (await readFile(join(dirPath, file))).toString()
-          assert.doesNotThrow(() => Sqrl.render(template, defaultVariables ?? {}), undefined, undefined, `part ${id}'s templates include invalid tags`)
+          assert.doesNotThrow(async () => Sqrl.render(template, typeof defaultVariables === 'function' ? await defaultVariables({ rootDir: cwd() }) : (defaultVariables ?? {})), undefined, undefined, `part ${id}'s templates include invalid tags`)
         }
       }
     }
