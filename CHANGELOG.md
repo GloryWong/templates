@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.0](https://github.com/GloryWong/templates/compare/v3.1.2...v3.2.0) (2024-09-05)
+
+
+### Features
+
+* **applyPartTemplate:** support rootDir ([8c2ae73](https://github.com/GloryWong/templates/commit/8c2ae7309a10f518ffff31895b220c3531e33fd6))
+* support create project ([bdfda69](https://github.com/GloryWong/templates/commit/bdfda69e337291f797761884b46a6ad44ed6ceb8))
+
 ## [3.1.2](https://github.com/GloryWong/templates/compare/v3.1.1...v3.1.2) (2024-08-11)
 
 
