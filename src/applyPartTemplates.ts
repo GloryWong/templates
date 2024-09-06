@@ -58,7 +58,7 @@ export async function applyPartTemplates(partIds: string[], srcItemIds?: (string
       if (install || await confirm({ message: 'New package dependencies are added. Install them?' })) {
         const log = logger('applyPartTemplates')
         if (verbose) {
-          enableLogger('templates:*')
+          enableLogger('noodle-one:*')
         }
         const spinner = ora({
           isSilent: process.env.NODE_ENV === 'test' || verbose,

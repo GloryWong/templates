@@ -1,3 +1,3 @@
 import { createLogger } from '@gloxy/logger'
 
-export const logger = createLogger('templates')
+export const logger = createLogger('noodle-one')

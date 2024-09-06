@@ -1,20 +1,21 @@
 {
-  "name": "@gloxy/templates",
+  "name": "noodle-one",
   "type": "module",
   "version": "3.2.0",
-  "description": "Apply part templates",
+  "description": "Noodle a project",
   "author": "glorywong1001@gmail.com",
   "license": "MIT",
-  "homepage": "https://github.com/GloryWong/templates#readme",
+  "homepage": "https://github.com/GloryWong/noodle-one#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GloryWong/templates.git"
+    "url": "https://github.com/GloryWong/noodle-one.git"
   },
   "bugs": {
-    "url": "https://github.com/GloryWong/templates/issues"
+    "url": "https://github.com/GloryWong/noodle-one/issues"
   },
   "keywords": [
     "template",
+    "boilerplate",
     "starter",
     "project",
     "node",
@@ -25,7 +26,7 @@
   "main": "./dist",
   "types": "./dist",
   "bin": {
-    "tmpl": "./dist/cli.js"
+    "noo": "./dist/cli.js"
   },
   "files": [
     "dist"

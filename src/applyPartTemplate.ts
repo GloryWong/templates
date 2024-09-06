@@ -88,7 +88,7 @@ export async function applyPartTemplate(partId: string, srcItemId?: string, opti
 
     const log = logger('applyPartTemplate')
     if (verbose) {
-      enableLogger('templates:*')
+      enableLogger('noodle-one:*')
     }
     const spinner = ora({
       isSilent: process.env.NODE_ENV === 'test' || verbose,

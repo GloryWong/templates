@@ -35,7 +35,7 @@ program.command('part')
   .showHelpAfterError(true)
   .action(async (options, command) => {
     if (options.verbose) {
-      enableLogger('templates:*')
+      enableLogger('noodle-one:*')
     }
     const log = logger('CLI')
     log.debug('Command: %s, options: %o', command.name(), options)
@@ -118,7 +118,7 @@ program.command('project')
   .showHelpAfterError(true)
   .action(async (_path, options, command) => {
     if (options.verbose) {
-      enableLogger('templates:*')
+      enableLogger('noodle-one:*')
     }
     const log = logger('CLI')
     log.debug('Command: %s, path: %o, options: %o', command.name(), _path, options)

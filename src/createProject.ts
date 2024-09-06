@@ -32,7 +32,7 @@ export async function createProject(projectPath: string, options: CreateProjectO
 
   const log = logger('createProject')
   if (verbose) {
-    enableLogger('templates:*')
+    enableLogger('noodle-one:*')
   }
   const spinner = ora({
     isSilent: process.env.NODE_ENV === 'test' || verbose,
