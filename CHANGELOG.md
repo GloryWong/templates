@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/GloryWong/noodle-one/compare/v3.2.0...v3.2.1) (2024-09-06)
+
+
+### Bug Fixes
+
+* update cli name to noo ([a6d8e9b](https://github.com/GloryWong/noodle-one/commit/a6d8e9b00c3ffa20714d635662576e72c56253f3))
+
 ## [3.2.0](https://github.com/GloryWong/templates/compare/v3.1.2...v3.2.0) (2024-09-05)
 
 
