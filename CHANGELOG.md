@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.2](https://github.com/GloryWong/noodle-one/compare/v3.2.1...v3.2.2) (2024-09-06)
+
+
+### Bug Fixes
+
+* remove useless files ([8c0d261](https://github.com/GloryWong/noodle-one/commit/8c0d261a6aa53b9e1a1971b112c3a850d2a5802f))
+
 ## [3.2.1](https://github.com/GloryWong/noodle-one/compare/v3.2.0...v3.2.1) (2024-09-06)
 
 
